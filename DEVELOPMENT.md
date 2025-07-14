@@ -1,89 +1,72 @@
 # Development Roadmap - Next Steps
 
-## ✅ Phase 1, 2 & 3 Complete: Live Dashboard Ready
+## ✅ Phase 1, 2, 3 & 4 Complete: Live 3D G-code Visualizer
 Your 3D Printer Web Controller now features:
 - Flask backend with printer communication & live status API
+- **NEW: G-code file serving and print simulation endpoints**
 - Component-based React frontend with Bootstrap UI
 - Connection management and manual command interface
-- **Real-time temperature monitoring with live polling**
-- **Modular UI components (Connection, TemperatureDisplay, ManualControl, Log)**
+- Real-time temperature monitoring with live polling
+- Modular UI components (Connection, TemperatureDisplay, ManualControl, Log)
+- **NEW: Interactive 3D G-code viewer with print simulation**
+- **NEW: Two-column responsive layout for optimal space usage**
 - Auto-refreshing dashboard that updates every 3 seconds
 
-### 🎯 New Components Created:
-1. **Connection.jsx** - Clean connection management with status indicators
-2. **TemperatureDisplay.jsx** - Live temperature monitoring with progress bars
-3. **ManualControl.jsx** - G-code interface with quick command buttons
-4. **Log.jsx** - Enhanced communication log with entry counter
+### 🎯 New 3D Visualization Features:
+1. **GcodeViewer.jsx** - Interactive 3D toolpath visualization using Three.js
+2. **G-code Parsing** - Converts G-code commands into 3D coordinates
+3. **Print Simulation** - Progressive rendering of toolpath during "printing"
+4. **Interactive Controls** - Zoom, pan, and rotate the 3D view
+5. **Visual Progress** - Gray toolpath shows full print, blue shows progress
 
-### 🌡️ Live Temperature Monitoring:
-- **Backend**: New `/api/status` endpoint that sends M105 and parses temperatures
-- **Frontend**: Auto-polls every 3 seconds when connected
-- **UI**: Beautiful temperature cards with progress indicators
-- **Data**: Tracks hotend and bed actual/target temperatures
+### 🌟 Backend Enhancements:
+- **`/api/gcode/<filename>`** - Serves G-code files for visualization
+- **`/api/print/start`** - Starts print simulation
+- **`/api/print/status`** - Returns current print progress
+- **Mock Mode** - Development-friendly simulation without real printer
 
-## 🚀 Phase 4: Advanced Temperature Features
+### 🎨 Frontend Improvements:
+- **Two-column Layout** - Controls on left, 3D viewer on right
+- **Responsive Design** - Adapts to different screen sizes
+- **Three.js Integration** - High-performance 3D graphics
+- **Real-time Updates** - Live print progress visualization
 
-### Goal: Refactor into modular, reusable components
+## 🚀 Phase 5: Advanced Print Management
+
+### Goal: Complete print management features
 
 Create these new React components in `frontend/src/components/`:
 
-1. **Connection.jsx** - Connection management
-2. **ManualControl.jsx** - G-code command interface  
-3. **LogViewer.jsx** - Communication log display
-4. **TemperatureMonitor.jsx** - Temperature readings and graphs
-5. **PrinterStatus.jsx** - Current printer state
+1. **FileManager.jsx** - G-code file upload and management
+2. **PrintControls.jsx** - Start, stop, and monitor print jobs
+3. **Settings.jsx** - Printer settings and configuration
+4. **UserManagement.jsx** - Manage users and permissions
+5. **NotificationSystem.jsx** - Alerts and notifications
 
 ### Implementation Steps:
 
 ```jsx
-// frontend/src/components/Connection.jsx
+// frontend/src/components/FileManager.jsx
 import { useState } from 'react';
 
-export default function Connection({ isConnected, onConnect, onDisconnect }) {
-    const [port, setPort] = useState('COM6');
+export default function FileManager() {
+    const [files, setFiles] = useState([]);
+    
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        // Upload logic
+    };
     
     return (
-        <div className="card mb-3">
-            <div className="card-header">Connection</div>
-            <div className="card-body d-flex align-items-center">
-                {/* Connection UI */}
+        <div className="card">
+            <div className="card-header">File Management</div>
+            <div className="card-body">
+                <input type="file" accept=".gcode,.g" onChange={handleFileUpload} />
+                {/* File list and print controls */}
             </div>
         </div>
     );
 }
-```
-
-## 🌡️ Phase 4: Live Temperature Monitoring
-
-### Backend Enhancements:
-Add to `backend/app.py`:
-
-```python
-@app.route('/api/status', methods=['GET'])
-def get_printer_status():
-    if not printer or not printer.is_open:
-        return jsonify(status='error', message='Printer not connected.'), 400
-    
-    printer.write(b'M105\n')  # Temperature command
-    response = get_printer_response()
-    
-    # Parse temperature data from response
-    temp_data = parse_temperature_response(response)
-    
-    return jsonify(status='success', temperature=temp_data, timestamp=time.time())
-```
-
-### Frontend Enhancements:
-```jsx
-// Auto-refresh temperature every 5 seconds
-useEffect(() => {
-    const interval = setInterval(() => {
-        if (isConnected) {
-            fetchTemperatureData();
-        }
-    }, 5000);
-    return () => clearInterval(interval);
-}, [isConnected]);
 ```
 
 ## 📁 Phase 5: File Management & Print Jobs
@@ -101,27 +84,6 @@ def start_print():
 @app.route('/api/print/control', methods=['POST'])
 def control_print():
     # Pause/Resume/Cancel print jobs
-```
-
-### File Upload Component:
-```jsx
-// frontend/src/components/FileManager.jsx
-export default function FileManager() {
-    const handleFileUpload = (event) => {
-        const file = event.target.files[0];
-        // Upload logic
-    };
-    
-    return (
-        <div className="card">
-            <div className="card-header">File Management</div>
-            <div className="card-body">
-                <input type="file" accept=".gcode,.g" onChange={handleFileUpload} />
-                {/* File list and print controls */}
-            </div>
-        </div>
-    );
-}
 ```
 
 ## 🛠️ Development Commands

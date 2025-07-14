@@ -1,0 +1,400 @@
+/* Custom styles for 3D Printer Dashboard */
+
+/* Pulse animation for live indicators */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Smooth hover effects */
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Glass morphism effect for cards */
+.card {
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Custom scrollbar for all scrollable areas */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(248, 249, 250, 0.8);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(108, 117, 125, 0.6);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(108, 117, 125, 0.8);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(108, 117, 125, 0.6) rgba(248, 249, 250, 0.8);
+}
+
+/* Ensure proper height calculations */
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Fix viewport height issues on mobile */
+@supports (-webkit-touch-callout: none) {
+  .vh-100 {
+    height: -webkit-fill-available;
+  }
+}
+
+/* Smooth scrolling for all containers */
+.container-fluid, .card-body, main {
+  scroll-behavior: smooth;
+}
+
+/* Main layout improvements */
+.main-layout {
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-container {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.viewer-container {
+  max-height: calc(100vh - 120px);
+  min-height: 400px;
+}
+
+/* Card scrolling improvements */
+.card-scrollable {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* File list specific scrolling */
+.file-list-container {
+  max-height: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Log container specific scrolling */
+.log-container {
+  height: 100%;
+  min-height: 150px;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Progress bar glow effect */
+.progress-bar {
+  position: relative;
+  overflow: visible;
+}
+
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: inherit;
+  border-radius: inherit;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Floating button effect */
+.btn-lg {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.btn-lg:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Temperature card hover effect */
+.card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.3s ease;
+}
+
+/* Connection status animation */
+.badge.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Enhanced input focus */
+.form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* File selection highlight */
+.list-group-item.active {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border-color: #667eea;
+}
+
+/* Manual control button grid */
+.manual-control-grid .btn {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* 3D Viewer overlay */
+.viewer-overlay {
+  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Loading spinner enhancement */
+.spinner-border {
+  border-width: 3px;
+}
+
+/* Status indicator enhancements */
+.status-indicator {
+  position: relative;
+  display: inline-block;
+}
+
+.status-indicator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+/* Enhanced shadows */
+.shadow-enhanced {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+/* Enhanced Connection Button Styles */
+.btn-connect {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-connect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3) !important;
+}
+
+.btn-connect:active {
+    transform: translateY(0);
+}
+
+.btn-connect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-connect:hover::before {
+    left: 100%;
+}
+
+/* Pulse animation for status indicators */
+.pulse {
+    animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    }
+}
+
+/* Connection status animations */
+.connection-success {
+    animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Quick port button hover effects */
+.quick-port-btn {
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.quick-port-btn:hover {
+    background-color: #007bff !important;
+    color: white !important;
+    border-color: #007bff !important;
+    transform: scale(1.05);
+}
+
+/* Loading spinner enhancement */
+.spinner-border-custom {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.125em;
+}
+
+/* Input group enhancements */
+.input-group-enhanced .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+.input-group-enhanced .input-group-text {
+    border-color: #007bff;
+}
+
+/* Tooltip-like help text */
+.help-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.help-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #343a40;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+.help-tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Enhanced alert styles */
+.alert-enhanced {
+    position: relative;
+    overflow: hidden;
+}
+
+.alert-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: loading-bar 2s infinite;
+}
+
+@keyframes loading-bar {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Emergency stop button enhancement */
+.btn-danger.emergency-stop {
+  background: linear-gradient(45deg, #dc3545, #c82333);
+  border: none;
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+  animation: emergency-pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes emergency-pulse {
+  from {
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+  }
+  to {
+    box-shadow: 0 6px 25px rgba(220, 53, 69, 0.5);
+  }
+}
+
+.btn-danger.emergency-stop:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(220, 53, 69, 0.6) !important;
+}
