@@ -1,21 +1,23 @@
-import { useState, useEffect, useRef } from 'react';
+// frontend/src/App.jsx
+import { useState, useEffect } from 'react';
+import Connection from './components/Connection';
+import TemperatureDisplay from './components/TemperatureDisplay';
+import ManualControl from './components/ManualControl';
+import Log from './components/Log';
 
 function App() {
-    const [port, setPort] = useState('COM6'); // Default COM port
+    const [port, setPort] = useState('COM6');
     const [isConnected, setIsConnected] = useState(false);
     const [log, setLog] = useState([]);
-    const [command, setCommand] = useState('');
-    const logEndRef = useRef(null);
+    const [temperatures, setTemperatures] = useState(null);
 
+    // --- Log Helper ---
     const addToLog = (message) => {
         const timestamp = new Date().toLocaleTimeString();
         setLog(prevLog => [...prevLog, `${timestamp} - ${message}`]);
     };
 
-    useEffect(() => {
-        logEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [log]);
-
+    // --- API Call Helper ---
     const handleApiCall = async (endpoint, options = {}) => {
         try {
             const response = await fetch(`http://127.0.0.1:5000${endpoint}`, options);
@@ -25,11 +27,12 @@ function App() {
             }
             return await response.json();
         } catch (error) {
-            addToLog(`Error: ${error.message}`);
+            addToLog(`API Error: ${error.message}`);
             return null;
         }
     };
 
+    // --- Connection Handlers ---
     const handleConnect = async () => {
         addToLog(`Connecting to ${port}...`);
         const data = await handleApiCall('/api/connect', {
@@ -53,8 +56,8 @@ function App() {
         }
     };
 
-    const handleSendCommand = async (e) => {
-        e.preventDefault();
+    // --- Command Handler ---
+    const handleSendCommand = async (command) => {
         if (!command || !isConnected) return;
         addToLog(`>>> ${command}`);
         const data = await handleApiCall('/api/command', {
@@ -65,50 +68,48 @@ function App() {
         if (data && data.response) {
             data.response.forEach(line => addToLog(`<<< ${line}`));
         }
-        setCommand('');
     };
+
+    // --- Live Status Polling ---
+    useEffect(() => {
+        if (isConnected) {
+            // Poll for status every 3 seconds
+            const interval = setInterval(async () => {
+                const data = await handleApiCall('/api/status');
+                if (data && data.status === 'success') {
+                    setTemperatures(data.temperatures);
+                }
+            }, 3000);
+            // Cleanup function to stop polling when disconnected
+            return () => clearInterval(interval);
+        } else {
+            setTemperatures(null); // Clear temps on disconnect
+        }
+    }, [isConnected]); // This effect re-runs whenever isConnected changes
 
     return (
         <div className="container my-4">
-            <h1 className="mb-4">3D Printer Web Controller</h1>
-
-            <div className="card mb-3">
-                <div className="card-header">Connection</div>
-                <div className="card-body d-flex align-items-center">
-                    <div className="col-auto">
-                        <input type="text" className="form-control" value={port} onChange={(e) => setPort(e.target.value)} disabled={isConnected} />
-                    </div>
-                    <div className="col-auto ms-2">
-                        <button className="btn btn-primary" onClick={handleConnect} disabled={isConnected}>Connect</button>
-                    </div>
-                    <div className="col-auto ms-2">
-                        <button className="btn btn-danger" onClick={handleDisconnect} disabled={!isConnected}>Disconnect</button>
-                    </div>
-                    <div className="col-auto ms-3">
-                        <span className={`badge ${isConnected ? 'bg-success' : 'bg-danger'}`}>
-                            {isConnected ? 'Connected' : 'Disconnected'}
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="card mb-3">
-                <div className="card-header">Manual Command</div>
-                <div className="card-body">
-                    <form onSubmit={handleSendCommand} className="d-flex">
-                        <input type="text" className="form-control" placeholder="Enter G-code..." value={command} onChange={(e) => setCommand(e.target.value)} disabled={!isConnected} />
-                        <button type="submit" className="btn btn-success ms-2" disabled={!isConnected}>Send</button>
-                    </form>
-                </div>
-            </div>
-
-            <div className="card">
-                <div className="card-header">Log</div>
-                <pre className="card-body bg-light" style={{ height: '400px', overflowY: 'scroll', fontFamily: 'monospace', fontSize: '0.8rem' }}>
-                    {log.join('\n')}
-                    <div ref={logEndRef} />
-                </pre>
-            </div>
+            <h1 className="mb-4">🖨️ 3D Printer Dashboard</h1>
+            
+            <Connection 
+                port={port}
+                setPort={setPort}
+                isConnected={isConnected}
+                onConnect={handleConnect}
+                onDisconnect={handleDisconnect}
+            />
+            
+            <TemperatureDisplay 
+                temperatures={temperatures} 
+                isConnected={isConnected}
+            />
+            
+            <ManualControl 
+                isConnected={isConnected}
+                onSendCommand={handleSendCommand}
+            />
+            
+            <Log log={log} />
         </div>
     );
 }
