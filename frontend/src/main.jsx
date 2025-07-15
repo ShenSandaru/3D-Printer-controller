@@ -1,7 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import './index.css'
+import './styles/custom.css'
+import './styles/ManualControl.css'
 import App from './App.jsx'
 
 // Fix mobile viewport height issues
@@ -17,8 +20,10 @@ setViewportHeight();
 window.addEventListener('resize', setViewportHeight);
 window.addEventListener('orientationchange', setViewportHeight);
 
-createRoot(document.getElementById('root')).render(
+// Create root and render app
+const root = createRoot(document.getElementById('root'));
+root.render(
   <StrictMode>
     <App />
-  </StrictMode>,
-)
+  </StrictMode>
+);

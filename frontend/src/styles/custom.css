@@ -398,3 +398,80 @@ html, body {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(220, 53, 69, 0.6) !important;
 }
+
+/* Connection Component Responsive Fixes */
+.connection-container {
+  min-height: 200px;
+  overflow: hidden;
+}
+
+.connection-container .form-label {
+  white-space: nowrap;
+  margin-bottom: 0.5rem;
+}
+
+.connection-container .input-group {
+  min-height: 44px;
+}
+
+.connection-container .form-control,
+.connection-container .form-select {
+  min-height: 44px;
+  font-size: 0.95rem;
+}
+
+/* Responsive breakpoints for connection layout */
+@media (max-width: 768px) {
+  .connection-container .col-md-6 {
+    margin-bottom: 1rem;
+  }
+  
+  .connection-container .btn-lg {
+    padding: 8px 16px;
+    font-size: 1rem;
+  }
+  
+  .connection-container .input-group {
+    min-height: 40px;
+  }
+  
+  .connection-container .form-control,
+  .connection-container .form-select {
+    min-height: 40px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .connection-container .form-label {
+    font-size: 0.9rem;
+  }
+  
+  .connection-container .btn-lg {
+    padding: 6px 12px;
+    font-size: 0.95rem;
+  }
+  
+  .connection-container .quick-port-btn {
+    min-width: 50px !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Prevent text overflow in connection status */
+.connection-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ensure proper spacing between elements */
+.connection-container .row {
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+}
+
+.connection-container .row > * {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}

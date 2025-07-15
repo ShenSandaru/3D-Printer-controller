@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Vite cache directories (to prevent Windows EPERM errors)
+.vite/
+.vite-cache/
+node_modules/.vite/
+node_modules/.vite-cache/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

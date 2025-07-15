@@ -1,14 +1,15 @@
 // frontend/src/components/Connection.jsx - Enhanced User-Friendly Version
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 export default function Connection({ port, setPort, isConnected, onConnect, onDisconnect }) {
     const [isConnecting, setIsConnecting] = useState(false);
     const [connectionError, setConnectionError] = useState('');
     const [availablePorts, setAvailablePorts] = useState([]);
     const [isDetectingPorts, setIsDetectingPorts] = useState(false);
+    const [baudRate, setBaudRate] = useState('115200');
 
     // Detect available ports
-    const detectPorts = async () => {
+    const detectPorts = useCallback(async () => {
         setIsDetectingPorts(true);
         try {
             const response = await fetch('http://127.0.0.1:5000/api/ports');
@@ -26,14 +27,14 @@ export default function Connection({ port, setPort, isConnected, onConnect, onDi
         } finally {
             setIsDetectingPorts(false);
         }
-    };
+    }, [port, setPort]);
 
     // Auto-detect ports on component mount
     React.useEffect(() => {
         if (!isConnected) {
             detectPorts();
         }
-    }, [isConnected]);
+    }, [isConnected, detectPorts]);
 
     const handleConnect = async () => {
         if (!port || !port.trim()) {
@@ -45,9 +46,9 @@ export default function Connection({ port, setPort, isConnected, onConnect, onDi
         setConnectionError('');
         
         try {
-            await onConnect();
+            await onConnect(port.trim(), baudRate);
         } catch (error) {
-            setConnectionError('Failed to connect. Please check the port and try again.');
+            setConnectionError(error.message || 'Failed to connect. Please check the port and baud rate.');
         } finally {
             setIsConnecting(false);
         }
@@ -63,46 +64,47 @@ export default function Connection({ port, setPort, isConnected, onConnect, onDi
         setPort(e.target.value);
     };
     return (
-        <div className="p-3">
-            <div className="row g-3 align-items-center">
-                <div className="col-12 col-lg-7">
-                    <label htmlFor="comPort" className="form-label fw-semibold text-muted mb-2">
-                        <i className="bi bi-usb-symbol me-2"></i>
-                        Printer Port
-                    </label>
-                    <div className="input-group input-group-lg input-group-enhanced shadow-sm">
-                        <span className="input-group-text bg-primary text-white border-0">
-                            <i className="bi bi-hdd-stack"></i>
-                        </span>
-                        <input 
-                            id="comPort" 
-                            type="text" 
-                            className={`form-control border-0 ${connectionError ? 'is-invalid' : ''}`}
-                            placeholder="COM3, COM6, /dev/ttyUSB0..."
-                            value={port} 
-                            onChange={handlePortChange}
-                            disabled={isConnected || isConnecting}
-                            style={{ 
-                                backgroundColor: isConnected ? '#e8f5e8' : 'white',
-                                fontSize: '1.1rem',
-                                fontWeight: '500'
-                            }}
-                        />
+        <div className="p-3 connection-container">
+            <div className="row g-3">
+                {/* Port Selection Column */}
+                <div className="col-12 col-md-6 col-lg-4">
+                    <div className="mb-3">
+                        <label htmlFor="comPort" className="form-label fw-semibold text-muted mb-2">
+                            <i className="bi bi-usb-symbol me-2"></i>
+                            Printer Port
+                        </label>
+                        <div className="input-group shadow-sm">
+                            <span className="input-group-text bg-primary text-white border-0">
+                                <i className="bi bi-hdd-stack"></i>
+                            </span>
+                            <input 
+                                id="comPort" 
+                                type="text" 
+                                className={`form-control border-0 ${connectionError ? 'is-invalid' : ''}`}
+                                placeholder="COM3, COM6, /dev/ttyUSB0..."
+                                value={port} 
+                                onChange={handlePortChange}
+                                disabled={isConnected || isConnecting}
+                                style={{ 
+                                    backgroundColor: isConnected ? '#e8f5e8' : 'white',
+                                    fontSize: '1rem',
+                                    fontWeight: '500'
+                                }}
+                            />
+                        </div>
                         {connectionError && (
-                            <div className="invalid-feedback d-block">
+                            <div className="invalid-feedback d-block mt-1">
                                 <i className="bi bi-exclamation-triangle me-1"></i>
                                 {connectionError}
                             </div>
                         )}
-                    </div>
-                    <div className="mt-2">
-                        <small className="text-muted">
-                            <i className="bi bi-info-circle me-1"></i>
-                            Common ports: COM3, COM6 (Windows) | /dev/ttyUSB0 (Linux) | /dev/cu.usbmodem (Mac)
-                        </small>
-                        <div className="mt-1">
+                        <div className="mt-2">
+                            <small className="text-muted d-block">
+                                <i className="bi bi-info-circle me-1"></i>
+                                Common: COM3, COM6 (Windows)
+                            </small>
                             <button 
-                                className="btn btn-link btn-sm p-0 text-decoration-none"
+                                className="btn btn-link btn-sm p-0 text-decoration-none mt-1"
                                 onClick={detectPorts}
                                 disabled={isDetectingPorts || isConnected}
                                 style={{ fontSize: '0.75rem' }}
@@ -123,80 +125,127 @@ export default function Connection({ port, setPort, isConnected, onConnect, onDi
                     </div>
                 </div>
                 
-                <div className="col-12 col-lg-5">
-                    <label className="form-label fw-semibold text-muted mb-2">
-                        <i className="bi bi-lightning-charge me-2"></i>
-                        Connection Status
-                    </label>
-                    <div className="d-grid gap-2">
-                        {!isConnected ? (
-                            <button 
-                                className="btn btn-success btn-lg btn-connect shadow-lg position-relative" 
-                                onClick={handleConnect}
-                                disabled={isConnecting || !port?.trim()}
+                {/* Baud Rate Selection Column */}
+                <div className="col-12 col-md-6 col-lg-3">
+                    <div className="mb-3">
+                        <label htmlFor="baudRate" className="form-label fw-semibold text-muted mb-2">
+                            <i className="bi bi-speedometer2 me-2"></i>
+                            Baud Rate
+                        </label>
+                        <div className="input-group shadow-sm">
+                            <span className="input-group-text bg-info text-white border-0">
+                                <i className="bi bi-lightning"></i>
+                            </span>
+                            <select 
+                                id="baudRate"
+                                className="form-select border-0"
+                                value={baudRate}
+                                onChange={(e) => setBaudRate(e.target.value)}
+                                disabled={isConnected || isConnecting}
                                 style={{ 
-                                    borderRadius: '15px',
-                                    padding: '12px 24px',
-                                    fontSize: '1.1rem',
-                                    fontWeight: '600',
-                                    background: isConnecting 
-                                        ? 'linear-gradient(45deg, #28a745, #20c997)' 
-                                        : 'linear-gradient(45deg, #28a745, #34ce57)',
-                                    border: 'none',
-                                    transform: isConnecting ? 'scale(0.98)' : 'scale(1)',
-                                    transition: 'all 0.2s ease'
+                                    backgroundColor: isConnected ? '#e8f5e8' : 'white',
+                                    fontSize: '1rem',
+                                    fontWeight: '500'
                                 }}
                             >
-                                {isConnecting ? (
-                                    <>
-                                        <span className="spinner-border spinner-border-custom me-2" role="status"></span>
-                                        Connecting...
-                                    </>
-                                ) : (
-                                    <>
-                                        <i className="bi bi-play-circle-fill me-2"></i>
-                                        Connect Printer
-                                    </>
-                                )}
-                            </button>
-                        ) : (
-                            <button 
-                                className="btn btn-danger btn-lg shadow-lg" 
-                                onClick={handleDisconnect}
-                                style={{ 
-                                    borderRadius: '15px',
-                                    padding: '12px 24px',
-                                    fontSize: '1.1rem',
-                                    fontWeight: '600',
-                                    background: 'linear-gradient(45deg, #dc3545, #fd7e14)',
-                                    border: 'none',
-                                    transition: 'all 0.2s ease'
-                                }}
-                            >
-                                <i className="bi bi-stop-circle-fill me-2"></i>
-                                Disconnect
-                            </button>
-                        )}
-                    </div>
-                    
-                    {/* Enhanced Quick Port Suggestions */}
-                    {!isConnected && !isConnecting && (
+                                <option value="115200">115200 (Common)</option>
+                                <option value="250000">250000 (Fast)</option>
+                                <option value="57600">57600</option>
+                                <option value="38400">38400</option>
+                                <option value="19200">19200</option>
+                                <option value="9600">9600</option>
+                            </select>
+                        </div>
                         <div className="mt-2">
-                            <small className="text-muted d-block mb-1">
+                            <small className="text-muted d-block">
+                                <i className="bi bi-info-circle me-1"></i>
+                                115200 for most printers
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                {/* Connection Button Column */}
+                <div className="col-12 col-lg-5">
+                    <div className="mb-3">
+                        <label className="form-label fw-semibold text-muted mb-2">
+                            <i className="bi bi-lightning-charge me-2"></i>
+                            Connection Status
+                        </label>
+                        <div className="d-grid">
+                            {!isConnected ? (
+                                <button 
+                                    className="btn btn-success btn-lg shadow-lg position-relative" 
+                                    onClick={handleConnect}
+                                    disabled={isConnecting || !port?.trim()}
+                                    style={{ 
+                                        borderRadius: '12px',
+                                        padding: '10px 20px',
+                                        fontSize: '1.1rem',
+                                        fontWeight: '600',
+                                        background: isConnecting 
+                                            ? 'linear-gradient(45deg, #28a745, #20c997)' 
+                                            : 'linear-gradient(45deg, #28a745, #34ce57)',
+                                        border: 'none',
+                                        transform: isConnecting ? 'scale(0.98)' : 'scale(1)',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                >
+                                    {isConnecting ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                                            Connecting...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i className="bi bi-play-circle-fill me-2"></i>
+                                            Connect Printer
+                                        </>
+                                    )}
+                                </button>
+                            ) : (
+                                <button 
+                                    className="btn btn-danger btn-lg shadow-lg" 
+                                    onClick={handleDisconnect}
+                                    style={{ 
+                                        borderRadius: '12px',
+                                        padding: '10px 20px',
+                                        fontSize: '1.1rem',
+                                        fontWeight: '600',
+                                        background: 'linear-gradient(45deg, #dc3545, #fd7e14)',
+                                        border: 'none',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                >
+                                    <i className="bi bi-stop-circle-fill me-2"></i>
+                                    Disconnect
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {/* Quick Port Suggestions Row */}
+            {!isConnected && !isConnecting && (
+                <div className="row">
+                    <div className="col-12">
+                        <div className="mt-2">
+                            <small className="text-muted d-block mb-2">
                                 {availablePorts.length > 0 ? 'Detected ports:' : 'Quick select:'}
                             </small>
-                            <div className="d-flex gap-1 flex-wrap">
+                            <div className="d-flex gap-2 flex-wrap">
                                 {availablePorts.length > 0 ? (
-                                    availablePorts.slice(0, 4).map(portInfo => (
+                                    availablePorts.slice(0, 6).map(portInfo => (
                                         <button 
                                             key={portInfo.port}
-                                            className={`btn btn-sm quick-port-btn ${portInfo.is_printer ? 'btn-primary' : 'btn-outline-secondary'}`}
+                                            className={`btn btn-sm ${portInfo.is_printer ? 'btn-primary' : 'btn-outline-secondary'}`}
                                             onClick={() => setPort(portInfo.port)}
                                             title={`${portInfo.description} - ${portInfo.manufacturer}`}
                                             style={{ 
-                                                fontSize: '0.75rem', 
+                                                fontSize: '0.8rem', 
                                                 borderRadius: '8px',
-                                                position: 'relative'
+                                                minWidth: '60px'
                                             }}
                                         >
                                             {portInfo.port}
@@ -209,9 +258,9 @@ export default function Connection({ port, setPort, isConnected, onConnect, onDi
                                     ['COM3', 'COM6', 'COM7'].map(quickPort => (
                                         <button 
                                             key={quickPort}
-                                            className="btn btn-outline-secondary btn-sm quick-port-btn"
+                                            className="btn btn-outline-secondary btn-sm"
                                             onClick={() => setPort(quickPort)}
-                                            style={{ fontSize: '0.75rem', borderRadius: '8px' }}
+                                            style={{ fontSize: '0.8rem', borderRadius: '8px', minWidth: '60px' }}
                                         >
                                             {quickPort}
                                         </button>
@@ -219,7 +268,7 @@ export default function Connection({ port, setPort, isConnected, onConnect, onDi
                                 )}
                             </div>
                             {availablePorts.length > 0 && (
-                                <div className="mt-1">
+                                <div className="mt-2">
                                     <small className="text-success">
                                         <i className="bi bi-check-circle me-1"></i>
                                         Found {availablePorts.length} port(s) 
@@ -228,9 +277,9 @@ export default function Connection({ port, setPort, isConnected, onConnect, onDi
                                 </div>
                             )}
                         </div>
-                    )}
+                    </div>
                 </div>
-            </div>
+            )}
             
             {/* Enhanced Connection Status Banners */}
             {isConnected && (

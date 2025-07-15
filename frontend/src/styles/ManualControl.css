@@ -1,0 +1,85 @@
+/* frontend/src/styles/ManualControl.css */
+
+.manual-control-card {
+    background-color: rgba(255, 255, 255, 0.98);
+    border: 0;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border-radius: 0.5rem;
+}
+
+.manual-control-card.disconnected .card-body {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.manual-control-card .card-header {
+    background-color: transparent;
+    border-bottom: 0;
+}
+
+.manual-control-card .card-title {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.manual-control-card .icon-large {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+.control-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.control-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.375rem;
+}
+
+.control-panel-grid .grid-item {
+    display: flex;
+}
+
+.control-panel-grid .btn {
+    border-radius: 0.375rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.input-group .form-control,
+.input-group .input-group-text,
+.input-group .btn {
+    border-radius: 0.375rem;
+}
+
+.input-group .form-control {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-group .input-group-text {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: #343a40;
+    color: white;
+    border: 0;
+}
+
+.input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quick-commands .btn {
+    border-radius: 0.375rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

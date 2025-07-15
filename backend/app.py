@@ -35,9 +35,14 @@ def get_printer_response():
     lines = []
     if printer and printer.is_open:
         while printer.in_waiting > 0:
-            line = printer.readline().decode('utf-8').strip()
-            if line: 
-                lines.append(line)
+            try:
+                line = printer.readline().decode('utf-8', errors='ignore').strip()
+                if line: 
+                    lines.append(line)
+            except UnicodeDecodeError:
+                # Skip lines that can't be decoded as UTF-8
+                logger.warning("Skipped line with invalid UTF-8 characters")
+                continue
     return lines
 
 # --- API Endpoints ---

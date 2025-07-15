@@ -7,7 +7,6 @@ export default function PrintProgress({ printStatus, onCancelPrint, onPausePrint
     }
 
     const isPaused = printStatus.status === 'paused' || printStatus.is_paused;
-    const isActive = printStatus.status === 'printing' && !isPaused;
 
     return (
         <div className={`card border-0 shadow-sm mb-3 ${isPaused ? 'print-progress-paused' : 'print-progress-card'}`} 
