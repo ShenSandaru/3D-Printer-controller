@@ -1,0 +1,9 @@
+@echo off
+echo Starting Frontend Development Server...
+echo.
+echo Clearing cache first to prevent permission issues...
+call npm run clean:cache
+echo.
+echo Starting development server with force option...
+call npm run dev:force
+pause
