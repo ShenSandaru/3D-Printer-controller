@@ -1,6 +1,6 @@
 // frontend/src/components/ManualControl.jsx
 import React, { useState } from 'react';
-import './ManualControl.css';
+import './EnhancedManualControl.css';
 
 const ControlButton = ({ command, onSendCommand, children, className = '', style = {}, disabled = false }) => (
     <button 
@@ -17,7 +17,6 @@ export default function ManualControl({ isConnected, onSendCommand, currentPosit
     const [command, setCommand] = useState('');
     const [stepSize, setStepSize] = useState(10);
     const [feedRate, setFeedRate] = useState(3000);
-    const [activeAxis, setActiveAxis] = useState('xyz');
 
     const handleSendCommand = async (e) => {
         e.preventDefault();
@@ -320,89 +319,30 @@ export default function ManualControl({ isConnected, onSendCommand, currentPosit
                         ))}
                     </div>
                 </div>
-                            </ControlButton>
-                        </div>
-                        <div className="grid-item">
-                            <ControlButton 
-                                onSendCommand={onSendCommand} 
-                                command="G1 X10 F3000"
-                                className="btn-info w-100"
-                            >
-                                <i className="bi bi-arrow-right"></i> +X
-                            </ControlButton>
-                        </div>
-                        <div className="grid-item"></div>
-                        <div className="grid-item">
-                            <ControlButton 
-                                onSendCommand={onSendCommand} 
-                                command="G1 Y-10 F3000"
-                                className="btn-info w-100"
-                            >
-                                <i className="bi bi-arrow-down"></i> -Y
-                            </ControlButton>
-                        </div>
-                        <div className="grid-item">
-                            <ControlButton 
-                                onSendCommand={onSendCommand} 
-                                command="M84"
-                                className="btn-danger w-100"
-                            >
-                                <i className="bi bi-power"></i> Off
-                            </ControlButton>
-                        </div>
-                    </div>
-                </div>
 
-                {/* Manual G-code input */}
-                <div className="mb-3">
+                {/* Custom Command Input */}
+                <div className="custom-command">
                     <label className="form-label fw-semibold text-muted mb-2">
                         <i className="bi bi-terminal me-1"></i>
                         Custom G-code Command
                     </label>
-                    <form onSubmit={handleSendCommand}>
-                        <div className="input-group">
-                            <span className="input-group-text">
-                                <i className="bi bi-chevron-right"></i>
-                            </span>
-                            <input 
-                                type="text" 
-                                className="form-control" 
-                                placeholder="Enter G-code command..." 
-                                value={command} 
-                                onChange={(e) => setCommand(e.target.value)} 
-                                disabled={!isConnected}
-                            />
-                            <button 
-                                type="submit" 
-                                className="btn btn-primary" 
-                                disabled={!isConnected || !command}
-                            >
-                                <i className="bi bi-send"></i>
-                            </button>
-                        </div>
+                    <form onSubmit={handleSendCommand} className="input-group">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Enter G-code command..."
+                            value={command}
+                            onChange={(e) => setCommand(e.target.value)}
+                            disabled={!isConnected}
+                        />
+                        <button 
+                            className="btn btn-primary" 
+                            type="submit"
+                            disabled={!isConnected || !command}
+                        >
+                            <i className="bi bi-send"></i>
+                        </button>
                     </form>
-                </div>
-
-                {/* Quick command buttons */}
-                <div>
-                    <label className="form-label fw-semibold text-muted mb-2">
-                        <i className="bi bi-lightning me-1"></i>
-                        Quick Commands
-                    </label>
-                    <div className="row g-2">
-                        {quickCommands.map((cmd, index) => (
-                            <div key={index} className="col-4">
-                                <button
-                                    className="btn btn-outline-primary btn-sm w-100"
-                                    onClick={() => onSendCommand(cmd.command)}
-                                    disabled={!isConnected}
-                                    title={cmd.description}
-                                >
-                                    {cmd.label}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             </div>
         </div>

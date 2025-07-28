@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Connection from './components/Connection';
-import ManualControl from './components/ManualControl';
+import ManualControl from './components/EnhancedManualControl';
 import TemperatureDisplay from './components/TemperatureDisplay';
 import PrintProgress from './components/PrintProgress';
 import FileManager from './components/FileManager';
 import Log from './components/Log';
 import GcodeViewer from './components/GcodeViewer';
+import ExtruderControl from './components/ExtruderControl';
+import AdvancedSettings from './components/AdvancedSettings';
+import ProbePanel from './components/ProbePanel';
 import './App.css';
 
 function App() {
@@ -15,6 +18,15 @@ function App() {
     const [temperatures, setTemperatures] = useState(null);
     const [printStatus, setPrintStatus] = useState({ status: 'idle' });
     const [gcode, setGcode] = useState('');
+    const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0, z: 0, e: 0 });
+    const [settings, setSettings] = useState({
+        enableTemperaturePanel: true,
+        enableExtruderPanel: true,
+        enableFilesPanel: true,
+        enableCommandsPanel: true,
+        enableProbePanel: false,
+        enableGRBLPanel: false
+    });
 
     // Helper function for API calls
     const handleApiCall = async (endpoint, options = {}) => {
@@ -204,21 +216,33 @@ function App() {
         }
     };
 
+    const handleSettingsChange = (newSettings) => {
+        setSettings(newSettings);
+    };
+
     return (
         <div className="container-fluid vh-100 d-flex flex-column p-3" style={{ backgroundColor: 'transparent' }}>
             <header className="mb-3">
                 <div className="text-center">
-                    <h1 className="display-4 fw-bold text-white mb-2 gradient-text" 
-                        style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
-                        <i className="bi bi-printer me-3"></i>
-                        3D Print Hub
-                    </h1>
+                    <div className="d-flex justify-content-between align-items-center">
+                        <h1 className="display-4 fw-bold text-white mb-2 gradient-text flex-grow-1" 
+                            style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+                            <i className="bi bi-printer me-3"></i>
+                            3D Print Hub
+                        </h1>
+                        <AdvancedSettings 
+                            isConnected={isConnected} 
+                            onSendCommand={sendCommand}
+                            onSettingsChange={handleSettingsChange}
+                        />
+                    </div>
                     <p className="lead text-white-50 mb-0">Professional 3D Printer Controller</p>
                 </div>
             </header>
             
-            <main className="flex-grow-1">
-                <div className="row h-100 g-3">
+            <main className="flex-grow-1 d-flex flex-column">
+                {/* Top Control Section */}
+                <div className="row g-3 mb-3">
                     {/* Left Sidebar */}
                     <div className="col-lg-4 d-flex flex-column">
                         <div className="card border-0 shadow-lg mb-3" style={{ backgroundColor: 'rgba(255, 255, 255, 0.98)' }}>
@@ -237,8 +261,31 @@ function App() {
                             <ManualControl 
                                 isConnected={isConnected}
                                 onSendCommand={sendCommand}
+                                currentPosition={currentPosition}
                             />
                         </div>
+                        
+                        {/* Enhanced Extruder Control */}
+                        {settings.enableExtruderPanel && (
+                            <div className="mb-3">
+                                <ExtruderControl 
+                                    isConnected={isConnected}
+                                    onSendCommand={sendCommand}
+                                    temperatures={temperatures}
+                                />
+                            </div>
+                        )}
+                        
+                        {/* Probe Panel */}
+                        {settings.enableProbePanel && (
+                            <div className="mb-3">
+                                <ProbePanel 
+                                    isConnected={isConnected}
+                                    onSendCommand={sendCommand}
+                                    settings={settings}
+                                />
+                            </div>
+                        )}
                         
                         <div className="flex-grow-1" style={{ minHeight: '200px' }}>
                             <Log log={log} />
@@ -248,12 +295,14 @@ function App() {
                     {/* Right Content Area */}
                     <div className="col-lg-8 d-flex flex-column">
                         {/* Temperature Display */}
-                        <div className="mb-3">
-                            <TemperatureDisplay 
-                                temperatures={temperatures}
-                                isConnected={isConnected}
-                            />
-                        </div>
+                        {settings.enableTemperaturePanel && (
+                            <div className="mb-3">
+                                <TemperatureDisplay 
+                                    temperatures={temperatures}
+                                    isConnected={isConnected}
+                                />
+                            </div>
+                        )}
                         
                         {/* Print Progress (only shown when printing) */}
                         {(printStatus.status === 'printing' || printStatus.status === 'paused') && (
@@ -268,18 +317,27 @@ function App() {
                             </div>
                         )}
                         
-                        {/* File Manager and Viewer */}
-                        <div className="row flex-grow-1 g-3">
-                            <div className="col-md-6">
+                        {/* File Manager */}
+                        {settings.enableFilesPanel && (
+                            <div className="flex-grow-1">
                                 <FileManager 
                                     isConnected={isConnected}
                                     onStartPrint={handleStartPrint}
                                     onViewFile={handleViewFile}
                                 />
                             </div>
-                            <div className="col-md-6">
-                                <GcodeViewer gcode={gcode} />
-                            </div>
+                        )}
+                    </div>
+                </div>
+                
+                {/* Bottom G-code Viewer Section - Full Width */}
+                <div className="row g-0 gcode-viewer-bottom">
+                    <div className="col-12">
+                        <div className="card border-0 shadow-lg gcode-viewer-card" style={{ 
+                            backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                            minHeight: '400px'
+                        }}>
+                            <GcodeViewer gcode={gcode} />
                         </div>
                     </div>
                 </div>

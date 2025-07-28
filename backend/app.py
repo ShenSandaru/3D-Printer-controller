@@ -29,8 +29,58 @@ IS_PAUSED = False
 PRINT_PROGRESS = 0
 TOTAL_LINES = 0
 CURRENT_FILE = ""
+CURRENT_POSITION = {'x': 0.0, 'y': 0.0, 'z': 0.0, 'e': 0.0}
+PRINTER_STATUS = {
+    'state': 'disconnected',
+    'temperatures': {},
+    'position': CURRENT_POSITION,
+    'feedrate': 100,
+    'flowrate': 100,
+    'fanspeed': 0
+}
 
 # --- Helper Functions ---
+def parse_position_from_response(response_line):
+    """Parse position information from M114 response"""
+    global CURRENT_POSITION
+    try:
+        if 'X:' in response_line and 'Y:' in response_line:
+            parts = response_line.split()
+            for part in parts:
+                if part.startswith('X:'):
+                    CURRENT_POSITION['x'] = float(part[2:])
+                elif part.startswith('Y:'):
+                    CURRENT_POSITION['y'] = float(part[2:])
+                elif part.startswith('Z:'):
+                    CURRENT_POSITION['z'] = float(part[2:])
+                elif part.startswith('E:'):
+                    CURRENT_POSITION['e'] = float(part[2:])
+    except ValueError:
+        pass  # Ignore parsing errors
+
+def parse_temperature_from_response(response_line):
+    """Parse temperature information from M105 response"""
+    global PRINTER_STATUS
+    try:
+        if 'T:' in response_line:
+            # Example: T:210.2 /210.0 B:60.1 /60.0
+            parts = response_line.split()
+            for part in parts:
+                if part.startswith('T:'):
+                    temp_data = part[2:].split('/')
+                    PRINTER_STATUS['temperatures']['extruder'] = {
+                        'current': float(temp_data[0]),
+                        'target': float(temp_data[1]) if len(temp_data) > 1 else 0
+                    }
+                elif part.startswith('B:'):
+                    temp_data = part[2:].split('/')
+                    PRINTER_STATUS['temperatures']['bed'] = {
+                        'current': float(temp_data[0]),
+                        'target': float(temp_data[1]) if len(temp_data) > 1 else 0
+                    }
+    except (ValueError, IndexError):
+        pass  # Ignore parsing errors
+
 def get_printer_response():
     lines = []
     if printer and printer.is_open:
@@ -39,6 +89,9 @@ def get_printer_response():
                 line = printer.readline().decode('utf-8', errors='ignore').strip()
                 if line: 
                     lines.append(line)
+                    # Parse useful information from responses
+                    parse_position_from_response(line)
+                    parse_temperature_from_response(line)
             except UnicodeDecodeError:
                 # Skip lines that can't be decoded as UTF-8
                 logger.warning("Skipped line with invalid UTF-8 characters")
@@ -63,6 +116,15 @@ def connect_printer():
         get_printer_response()  # Clear buffer
         
         logger.info(f"Successfully connected to printer on {port}")
+        # Initialize printer status
+        PRINTER_STATUS['state'] = 'connected'
+        # Request initial position and temperature
+        if printer.is_open:
+            printer.write(b'M114\n')  # Get position
+            time.sleep(0.1)
+            printer.write(b'M105\n')  # Get temperature
+            get_printer_response()
+        
         return jsonify(status='success', message=f'Connected to printer on {port}')
     except serial.SerialException as e:
         logger.error(f"Failed to connect to printer: {str(e)}")
@@ -73,7 +135,7 @@ def connect_printer():
 
 @app.route('/api/disconnect', methods=['POST'])
 def disconnect_printer():
-    global printer, IS_PRINTING, IS_PAUSED
+    global printer, IS_PRINTING, IS_PAUSED, PRINTER_STATUS
     try:
         if IS_PRINTING:
             logger.info("Stopping active print job before disconnecting")
@@ -85,6 +147,7 @@ def disconnect_printer():
             logger.info("Disconnecting from printer")
             printer.close()
         printer = None
+        PRINTER_STATUS['state'] = 'disconnected'
         return jsonify(status='success', message='Disconnected successfully.')
     except Exception as e:
         logger.error(f"Error during disconnection: {str(e)}")
@@ -161,6 +224,262 @@ def get_status():
     except Exception as e:
         logger.error(f"Error getting status: {str(e)}")
         return jsonify(status='error', message=f'Status check failed: {str(e)}'), 500
+
+# --- Enhanced API Endpoints ---
+@app.route('/api/position', methods=['GET'])
+def get_position():
+    """Get current printer position"""
+    if not printer or not printer.is_open:
+        return jsonify(status='error', message='Printer not connected.'), 400
+    
+    try:
+        printer.write(b'M114\n')  # Get current position
+        time.sleep(0.2)
+        get_printer_response()  # This will update CURRENT_POSITION
+        
+        return jsonify(
+            status='success',
+            position=CURRENT_POSITION
+        )
+    except Exception as e:
+        logger.error(f"Error getting position: {str(e)}")
+        return jsonify(status='error', message=f'Position check failed: {str(e)}'), 500
+
+@app.route('/api/move', methods=['POST'])
+def move_axis():
+    """Move printer axis with specified parameters"""
+    if not printer or not printer.is_open:
+        return jsonify(status='error', message='Printer not connected.'), 400
+    
+    try:
+        data = request.get_json()
+        axis = data.get('axis', '').upper()
+        distance = data.get('distance', 0)
+        feedrate = data.get('feedrate', 3000)
+        relative = data.get('relative', True)
+        
+        if axis not in ['X', 'Y', 'Z', 'E']:
+            return jsonify(status='error', message='Invalid axis. Use X, Y, Z, or E.'), 400
+        
+        # Build G-code command
+        if relative:
+            command = f"G91 G1 {axis}{distance} F{feedrate} G90"
+        else:
+            command = f"G90 G1 {axis}{distance} F{feedrate}"
+        
+        logger.info(f"Moving {axis} axis: {command}")
+        printer.write(command.encode() + b'\n')
+        time.sleep(0.1)
+        response = get_printer_response()
+        
+        return jsonify(status='success', command=command, response=response)
+    except Exception as e:
+        logger.error(f"Error moving axis: {str(e)}")
+        return jsonify(status='error', message=f'Move failed: {str(e)}'), 500
+
+@app.route('/api/home', methods=['POST'])
+def home_axes():
+    """Home specified axes"""
+    if not printer or not printer.is_open:
+        return jsonify(status='error', message='Printer not connected.'), 400
+    
+    try:
+        data = request.get_json()
+        axes = data.get('axes', 'XYZ').upper()
+        
+        # Validate axes
+        valid_axes = set('XYZE')
+        if not all(axis in valid_axes for axis in axes):
+            return jsonify(status='error', message='Invalid axes. Use combination of X, Y, Z, E.'), 400
+        
+        command = f"G28 {' '.join(axes)}"
+        logger.info(f"Homing axes: {command}")
+        printer.write(command.encode() + b'\n')
+        time.sleep(2)  # Homing takes longer
+        response = get_printer_response()
+        
+        return jsonify(status='success', command=command, response=response)
+    except Exception as e:
+        logger.error(f"Error homing axes: {str(e)}")
+        return jsonify(status='error', message=f'Homing failed: {str(e)}'), 500
+
+@app.route('/api/extruder', methods=['POST'])
+def control_extruder():
+    """Control extruder extrusion/retraction"""
+    if not printer or not printer.is_open:
+        return jsonify(status='error', message='Printer not connected.'), 400
+    
+    try:
+        data = request.get_json()
+        action = data.get('action', 'extrude').lower()
+        distance = abs(float(data.get('distance', 5)))
+        feedrate = data.get('feedrate', 300)
+        temperature = data.get('temperature', 0)
+        extruder = data.get('extruder', 0)
+        
+        commands = []
+        
+        # Set extruder temperature if specified
+        if temperature > 0:
+            commands.append(f"M104 T{extruder} S{temperature}")
+        
+        # Select extruder if multi-extruder
+        if extruder > 0:
+            commands.append(f"T{extruder}")
+        
+        # Perform extrusion/retraction
+        if action == 'retract':
+            distance = -distance
+        
+        commands.append(f"G91 G1 E{distance} F{feedrate} G90")
+        
+        # Send commands
+        for command in commands:
+            logger.info(f"Extruder command: {command}")
+            printer.write(command.encode() + b'\n')
+            time.sleep(0.1)
+        
+        response = get_printer_response()
+        return jsonify(status='success', commands=commands, response=response)
+    except Exception as e:
+        logger.error(f"Error controlling extruder: {str(e)}")
+        return jsonify(status='error', message=f'Extruder control failed: {str(e)}'), 500
+
+@app.route('/api/temperature', methods=['POST'])
+def set_temperature():
+    """Set extruder or bed temperature"""
+    if not printer or not printer.is_open:
+        return jsonify(status='error', message='Printer not connected.'), 400
+    
+    try:
+        data = request.get_json()
+        target = data.get('target', 'extruder').lower()
+        temperature = data.get('temperature', 0)
+        extruder = data.get('extruder', 0)
+        
+        if target == 'extruder' or target == 'hotend':
+            command = f"M104 T{extruder} S{temperature}"
+        elif target == 'bed':
+            command = f"M140 S{temperature}"
+        else:
+            return jsonify(status='error', message='Invalid target. Use "extruder" or "bed".'), 400
+        
+        logger.info(f"Setting temperature: {command}")
+        printer.write(command.encode() + b'\n')
+        time.sleep(0.1)
+        response = get_printer_response()
+        
+        return jsonify(status='success', command=command, response=response)
+    except Exception as e:
+        logger.error(f"Error setting temperature: {str(e)}")
+        return jsonify(status='error', message=f'Temperature setting failed: {str(e)}'), 500
+
+@app.route('/api/fan', methods=['POST'])
+def control_fan():
+    """Control printer fan speed"""
+    if not printer or not printer.is_open:
+        return jsonify(status='error', message='Printer not connected.'), 400
+    
+    try:
+        data = request.get_json()
+        speed = data.get('speed', 0)  # 0-100%
+        fan_index = data.get('fan', 0)
+        
+        # Convert percentage to PWM value (0-255)
+        pwm_value = int((speed / 100) * 255)
+        pwm_value = max(0, min(255, pwm_value))
+        
+        if speed == 0:
+            command = f"M107 P{fan_index}"  # Turn off fan
+        else:
+            command = f"M106 P{fan_index} S{pwm_value}"  # Set fan speed
+        
+        logger.info(f"Fan control: {command}")
+        printer.write(command.encode() + b'\n')
+        time.sleep(0.1)
+        response = get_printer_response()
+        
+        PRINTER_STATUS['fanspeed'] = speed
+        return jsonify(status='success', command=command, response=response)
+    except Exception as e:
+        logger.error(f"Error controlling fan: {str(e)}")
+        return jsonify(status='error', message=f'Fan control failed: {str(e)}'), 500
+
+@app.route('/api/feedrate', methods=['POST'])
+def set_feedrate():
+    """Set print feed rate multiplier"""
+    if not printer or not printer.is_open:
+        return jsonify(status='error', message='Printer not connected.'), 400
+    
+    try:
+        data = request.get_json()
+        rate = data.get('rate', 100)  # Percentage
+        
+        command = f"M220 S{rate}"
+        logger.info(f"Setting feed rate: {command}")
+        printer.write(command.encode() + b'\n')
+        time.sleep(0.1)
+        response = get_printer_response()
+        
+        PRINTER_STATUS['feedrate'] = rate
+        return jsonify(status='success', command=command, response=response)
+    except Exception as e:
+        logger.error(f"Error setting feed rate: {str(e)}")
+        return jsonify(status='error', message=f'Feed rate setting failed: {str(e)}'), 500
+
+@app.route('/api/flowrate', methods=['POST'])
+def set_flowrate():
+    """Set extrusion flow rate multiplier"""
+    if not printer or not printer.is_open:
+        return jsonify(status='error', message='Printer not connected.'), 400
+    
+    try:
+        data = request.get_json()
+        rate = data.get('rate', 100)  # Percentage
+        extruder = data.get('extruder', 0)
+        
+        command = f"M221 T{extruder} S{rate}"
+        logger.info(f"Setting flow rate: {command}")
+        printer.write(command.encode() + b'\n')
+        time.sleep(0.1)
+        response = get_printer_response()
+        
+        PRINTER_STATUS['flowrate'] = rate
+        return jsonify(status='success', command=command, response=response)
+    except Exception as e:
+        logger.error(f"Error setting flow rate: {str(e)}")
+        return jsonify(status='error', message=f'Flow rate setting failed: {str(e)}'), 500
+
+@app.route('/api/probe', methods=['POST'])
+def probe_bed():
+    """Perform bed probing operations"""
+    if not printer or not printer.is_open:
+        return jsonify(status='error', message='Printer not connected.'), 400
+    
+    try:
+        data = request.get_json()
+        operation = data.get('operation', 'simple').lower()
+        
+        if operation == 'simple':
+            command = "G30"  # Single probe
+        elif operation == 'auto_level':
+            command = "G29"  # Auto bed leveling
+        elif operation == 'z_probe':
+            max_travel = data.get('max_travel', 40)
+            feedrate = data.get('feedrate', 100)
+            command = f"G38.2 Z-{max_travel} F{feedrate}"
+        else:
+            return jsonify(status='error', message='Invalid probe operation.'), 400
+        
+        logger.info(f"Probe operation: {command}")
+        printer.write(command.encode() + b'\n')
+        time.sleep(2)  # Probing takes time
+        response = get_printer_response()
+        
+        return jsonify(status='success', command=command, response=response)
+    except Exception as e:
+        logger.error(f"Error during probe operation: {str(e)}")
+        return jsonify(status='error', message=f'Probe operation failed: {str(e)}'), 500
 
 # --- File Management API ---
 @app.route('/api/files', methods=['GET'])

@@ -31,6 +31,74 @@ header h1 {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* G-code Viewer Responsive Enhancements */
+.gcode-viewer-bottom {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.gcode-viewer-card {
+  transition: all 0.3s ease;
+  border-radius: 0.5rem;
+}
+
+.gcode-viewer-card.collapsed {
+  transform: translateY(0);
+}
+
+.gcode-viewer-card:not(.collapsed) {
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 0.5rem !important;
+  }
+  
+  header h1 {
+    font-size: 2rem !important;
+  }
+  
+  header p {
+    font-size: 0.9rem !important;
+  }
+  
+  .gcode-viewer-card {
+    border-radius: 0.25rem;
+  }
+  
+  .card-header {
+    padding: 0.5rem;
+  }
+  
+  .btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .gcode-viewer-card .card-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch !important;
+  }
+  
+  .gcode-viewer-card .card-header .d-flex {
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .btn-group {
+    width: 100%;
+  }
+  
+  .btn-group .btn {
+    flex: 1;
+  }
+}
+
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
