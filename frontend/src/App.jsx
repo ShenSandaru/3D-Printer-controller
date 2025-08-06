@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Connection from './components/Connection';
 import ManualControl from './components/EnhancedManualControl';
+import CircularControlPad from './components/CircularControlPad';
 import TemperatureDisplay from './components/TemperatureDisplay';
+import FloatingTemperaturePopup from './components/FloatingTemperaturePopup';
 import PrintProgress from './components/PrintProgress';
 import FileManager from './components/FileManager';
 import Log from './components/Log';
@@ -25,8 +27,89 @@ function App() {
         enableFilesPanel: true,
         enableCommandsPanel: true,
         enableProbePanel: false,
-        enableGRBLPanel: false
+        enableGRBLPanel: false,
+        useCircularControlPad: true  // New setting for control pad type
     });
+
+    // Resizable layout state
+    const [layout, setLayout] = useState(() => {
+        const savedLayout = localStorage.getItem('printerControllerLayout');
+        return savedLayout ? JSON.parse(savedLayout) : {
+            leftPanelWidth: 300,
+            rightPanelWidth: 300,
+            logPanelHeight: 250,
+            gcodeViewerHeight: 400
+        };
+    });
+
+    // Save layout to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('printerControllerLayout', JSON.stringify(layout));
+    }, [layout]);
+
+    // Drag state for resizing
+    const [isDragging, setIsDragging] = useState(null);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+    // Handle mouse down on resize handles
+    const handleResizeStart = (resizeType, e) => {
+        e.preventDefault();
+        setIsDragging(resizeType);
+        setDragStart({ x: e.clientX, y: e.clientY });
+    };
+
+    // Handle mouse move during resize
+    const handleResizeMove = (e) => {
+        if (!isDragging) return;
+
+        const deltaX = e.clientX - dragStart.x;
+        const deltaY = e.clientY - dragStart.y;
+
+        setLayout(prev => {
+            const newLayout = { ...prev };
+            
+            switch (isDragging) {
+                case 'left':
+                    newLayout.leftPanelWidth = Math.max(200, Math.min(500, prev.leftPanelWidth + deltaX));
+                    break;
+                case 'right':
+                    newLayout.rightPanelWidth = Math.max(200, Math.min(500, prev.rightPanelWidth - deltaX));
+                    break;
+                case 'log':
+                    newLayout.logPanelHeight = Math.max(150, Math.min(400, prev.logPanelHeight - deltaY));
+                    break;
+                case 'gcode':
+                    newLayout.gcodeViewerHeight = Math.max(200, Math.min(600, prev.gcodeViewerHeight + deltaY));
+                    break;
+            }
+            
+            return newLayout;
+        });
+
+        setDragStart({ x: e.clientX, y: e.clientY });
+    };
+
+    // Handle mouse up to stop resizing
+    const handleResizeEnd = () => {
+        setIsDragging(null);
+    };
+
+    // Add global event listeners for mouse move and up
+    useEffect(() => {
+        if (isDragging) {
+            document.addEventListener('mousemove', handleResizeMove);
+            document.addEventListener('mouseup', handleResizeEnd);
+            document.body.style.cursor = isDragging === 'left' || isDragging === 'right' ? 'col-resize' : 'row-resize';
+            document.body.style.userSelect = 'none';
+            
+            return () => {
+                document.removeEventListener('mousemove', handleResizeMove);
+                document.removeEventListener('mouseup', handleResizeEnd);
+                document.body.style.cursor = 'default';
+                document.body.style.userSelect = 'auto';
+            };
+        }
+    }, [isDragging, dragStart]);
 
     // Helper function for API calls
     const handleApiCall = async (endpoint, options = {}) => {
@@ -222,6 +305,12 @@ function App() {
 
     return (
         <div className="container-fluid vh-100 d-flex flex-column p-3" style={{ backgroundColor: 'transparent' }}>
+            {/* Floating Temperature Popup */}
+            <FloatingTemperaturePopup 
+                temperatures={temperatures}
+                isConnected={isConnected}
+            />
+            
             <header className="mb-3">
                 <div className="text-center">
                     <div className="d-flex justify-content-between align-items-center">
@@ -258,11 +347,19 @@ function App() {
                         </div>
                         
                         <div className="mb-3">
-                            <ManualControl 
-                                isConnected={isConnected}
-                                onSendCommand={sendCommand}
-                                currentPosition={currentPosition}
-                            />
+                            {settings.useCircularControlPad ? (
+                                <CircularControlPad 
+                                    isConnected={isConnected}
+                                    onSendCommand={sendCommand}
+                                    currentPosition={currentPosition}
+                                />
+                            ) : (
+                                <ManualControl 
+                                    isConnected={isConnected}
+                                    onSendCommand={sendCommand}
+                                    currentPosition={currentPosition}
+                                />
+                            )}
                         </div>
                         
                         {/* Enhanced Extruder Control */}

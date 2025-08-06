@@ -37,6 +37,7 @@ const AdvancedSettings = ({ isConnected, onSendCommand, onSettingsChange }) => {
         enableGRBLPanel: false,
         enableProbePanel: false,
         enableSurfacePanel: false,
+        useCircularControlPad: true,  // New setting for control pad type
         
         // File Filters
         fileFilters: 'gco;gcode;g;G;GCO;GCODE',
@@ -121,6 +122,7 @@ const AdvancedSettings = ({ isConnected, onSendCommand, onSettingsChange }) => {
             enableGRBLPanel: false,
             enableProbePanel: false,
             enableSurfacePanel: false,
+            useCircularControlPad: true,
             fileFilters: 'gco;gcode;g;G;GCO;GCODE',
             probeMaxTravel: 40,
             probeFeedrate: 100,
@@ -302,6 +304,20 @@ const AdvancedSettings = ({ isConnected, onSendCommand, onSettingsChange }) => {
                         <label className="form-check-label" htmlFor="enableProbePanel">
                             Show Probe Panel
                         </label>
+                    </div>
+                    
+                    <div className="form-check form-switch mb-2">
+                        <input 
+                            className="form-check-input" 
+                            type="checkbox" 
+                            id="useCircularControlPad"
+                            checked={settings.useCircularControlPad}
+                            onChange={(e) => handleSettingChange('useCircularControlPad', e.target.checked)}
+                        />
+                        <label className="form-check-label" htmlFor="useCircularControlPad">
+                            Use Circular Control Pad
+                        </label>
+                        <small className="text-muted d-block">Enable ESP3D-style circular jog control</small>
                     </div>
                 </div>
             </div>
