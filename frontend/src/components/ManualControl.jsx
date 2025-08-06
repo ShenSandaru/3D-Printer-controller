@@ -320,38 +320,6 @@ export default function ManualControl({ isConnected, onSendCommand, currentPosit
                         ))}
                     </div>
                 </div>
-                            </ControlButton>
-                        </div>
-                        <div className="grid-item">
-                            <ControlButton 
-                                onSendCommand={onSendCommand} 
-                                command="G1 X10 F3000"
-                                className="btn-info w-100"
-                            >
-                                <i className="bi bi-arrow-right"></i> +X
-                            </ControlButton>
-                        </div>
-                        <div className="grid-item"></div>
-                        <div className="grid-item">
-                            <ControlButton 
-                                onSendCommand={onSendCommand} 
-                                command="G1 Y-10 F3000"
-                                className="btn-info w-100"
-                            >
-                                <i className="bi bi-arrow-down"></i> -Y
-                            </ControlButton>
-                        </div>
-                        <div className="grid-item">
-                            <ControlButton 
-                                onSendCommand={onSendCommand} 
-                                command="M84"
-                                className="btn-danger w-100"
-                            >
-                                <i className="bi bi-power"></i> Off
-                            </ControlButton>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Manual G-code input */}
                 <div className="mb-3">
@@ -381,28 +349,6 @@ export default function ManualControl({ isConnected, onSendCommand, currentPosit
                             </button>
                         </div>
                     </form>
-                </div>
-
-                {/* Quick command buttons */}
-                <div>
-                    <label className="form-label fw-semibold text-muted mb-2">
-                        <i className="bi bi-lightning me-1"></i>
-                        Quick Commands
-                    </label>
-                    <div className="row g-2">
-                        {quickCommands.map((cmd, index) => (
-                            <div key={index} className="col-4">
-                                <button
-                                    className="btn btn-outline-primary btn-sm w-100"
-                                    onClick={() => onSendCommand(cmd.command)}
-                                    disabled={!isConnected}
-                                    title={cmd.description}
-                                >
-                                    {cmd.label}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             </div>
         </div>
