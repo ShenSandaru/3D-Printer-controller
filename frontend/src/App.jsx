@@ -397,6 +397,7 @@ function App() {
                                 <TemperatureDisplay 
                                     temperatures={temperatures}
                                     isConnected={isConnected}
+                                    onSendCommand={sendCommand}
                                 />
                             </div>
                         )}
