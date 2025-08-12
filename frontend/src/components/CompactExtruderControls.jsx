@@ -83,7 +83,9 @@ const CompactExtruderControls = ({ isConnected, onSendCommand, temperatures }) =
                     <label className="control-label">Heat:</label>
                     <div className="temperature-controls">
                         <div className="temp-row">
-                            <span className="temp-label">Off</span>
+                            <span className={`temp-status ${(temperatures?.hotend_target || 0) > 0 ? 'on' : 'off'}`}>
+                                {(temperatures?.hotend_target || 0) > 0 ? 'ON' : 'OFF'}
+                            </span>
                             <select 
                                 className="form-select form-select-sm me-2"
                                 value={extruderSettings.hotendTarget}
@@ -104,7 +106,7 @@ const CompactExtruderControls = ({ isConnected, onSendCommand, temperatures }) =
                                 Off
                             </button>
                             <button 
-                                className="btn btn-outline-primary btn-sm"
+                                className="btn btn-outline-success btn-sm"
                                 onClick={() => handleSetTemperature('hotend', extruderSettings.hotendTarget)}
                                 disabled={!isConnected}
                                 style={{ fontSize: '10px', padding: '2px 6px' }}
@@ -119,7 +121,9 @@ const CompactExtruderControls = ({ isConnected, onSendCommand, temperatures }) =
                     <label className="control-label">Bed:</label>
                     <div className="temperature-controls">
                         <div className="temp-row">
-                            <span className="temp-label">Off</span>
+                            <span className={`temp-status ${(temperatures?.bed_target || 0) > 0 ? 'on' : 'off'}`}>
+                                {(temperatures?.bed_target || 0) > 0 ? 'ON' : 'OFF'}
+                            </span>
                             <select 
                                 className="form-select form-select-sm me-2"
                                 value={extruderSettings.bedTarget}
@@ -140,7 +144,7 @@ const CompactExtruderControls = ({ isConnected, onSendCommand, temperatures }) =
                                 Off
                             </button>
                             <button 
-                                className="btn btn-outline-primary btn-sm"
+                                className="btn btn-outline-success btn-sm"
                                 onClick={() => handleSetTemperature('bed', extruderSettings.bedTarget)}
                                 disabled={!isConnected}
                                 style={{ fontSize: '10px', padding: '2px 6px' }}
