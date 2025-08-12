@@ -385,7 +385,7 @@ function App() {
                         )}
                         
                         <div className="flex-grow-1" style={{ minHeight: '200px' }}>
-                            <Log log={log} />
+                            <Log log={log} onSendCommand={sendCommand} />
                         </div>
                     </div>
                     
