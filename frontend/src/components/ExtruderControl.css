@@ -124,6 +124,40 @@
     padding: 6px 12px;
 }
 
+.control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.temperature-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.temp-status {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    font-weight: bold;
+    font-size: 0.875em;
+}
+
+.temp-status.on {
+    background-color: var(--bs-success);
+    color: white;
+}
+
+.temp-status.off {
+    background-color: var(--bs-danger);
+    color: white;
+}
+
+.temperature-controls .form-select-sm {
+    width: auto;
+    flex-grow: 1;
+}
+
 @media (max-width: 768px) {
     .extruder-control .col-md-4,
     .extruder-control .col-md-8 {

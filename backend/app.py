@@ -29,6 +29,7 @@ IS_PAUSED = False
 PRINT_PROGRESS = 0
 TOTAL_LINES = 0
 CURRENT_FILE = ""
+PRINT_ERROR = None  # To store any errors that occur during printing
 CURRENT_POSITION = {'x': 0.0, 'y': 0.0, 'z': 0.0, 'e': 0.0}
 PRINTER_STATUS = {
     'state': 'disconnected',
@@ -178,7 +179,7 @@ def send_command():
 @app.route('/api/status', methods=['GET'])
 def get_status():
     if not printer or not printer.is_open:
-        return jsonify(status='not_connected')
+        return jsonify(status='not_connected', error=PRINT_ERROR)
 
     try:
         printer.write(b'M105\n')
@@ -200,26 +201,40 @@ def get_status():
                     })
                 break
 
+        base_status = {
+            'temperatures': temps,
+            'is_paused': IS_PAUSED,
+            'error': PRINT_ERROR
+        }
+
         if IS_PRINTING:
             progress = (PRINT_PROGRESS / TOTAL_LINES) * 100 if TOTAL_LINES > 0 else 0
             print_status = 'paused' if IS_PAUSED else 'printing'
-            return jsonify(
-                status=print_status, 
-                progress=round(progress, 2), 
-                filename=CURRENT_FILE, 
-                temperatures=temps,
-                current_line=PRINT_PROGRESS,
-                total_lines=TOTAL_LINES,
-                is_paused=IS_PAUSED
-            )
+            base_status.update({
+                'status': print_status,
+                'progress': round(progress, 2),
+                'filename': CURRENT_FILE,
+                'current_line': PRINT_PROGRESS,
+                'total_lines': TOTAL_LINES,
+            })
+        elif PRINT_ERROR:
+            base_status.update({
+                'status': 'error',
+                'progress': (PRINT_PROGRESS / TOTAL_LINES) * 100 if TOTAL_LINES > 0 else 0,
+                'filename': CURRENT_FILE,
+                'current_line': PRINT_PROGRESS,
+                'total_lines': TOTAL_LINES,
+            })
         else:
-            return jsonify(
-                status='connected', 
-                progress=0, 
-                filename="", 
-                temperatures=temps,
-                is_paused=False
-            )
+            base_status.update({
+                'status': 'connected',
+                'progress': 0,
+                'filename': "",
+                'current_line': 0,
+                'total_lines': 0,
+            })
+        
+        return jsonify(base_status)
             
     except Exception as e:
         logger.error(f"Error getting status: {str(e)}")
@@ -542,9 +557,10 @@ def get_gcode(filename):
 
 # --- Print Streaming Logic ---
 def print_job_thread(filepath):
-    global IS_PRINTING, IS_PAUSED, PRINT_PROGRESS, TOTAL_LINES
+    global IS_PRINTING, IS_PAUSED, PRINT_PROGRESS, TOTAL_LINES, PRINT_ERROR
     try:
         logger.info(f"Starting print job: {filepath}")
+        PRINT_ERROR = None  # Reset error state at the start of a print
         
         # Read and filter G-code lines
         with open(filepath, 'r') as f:
@@ -607,15 +623,21 @@ def print_job_thread(filepath):
                                 break
                             elif 'error' in response.lower():
                                 logger.error(f"Printer error on line {i+1}: {response}")
+                                PRINT_ERROR = f"Printer error on line {i+1}: {response}"
+                                IS_PRINTING = False  # Stop printing on error
                                 break
                         time.sleep(0.1)
                         timeout_count += 1
                     
                     if not ack_received:
                         logger.warning(f"Timeout waiting for acknowledgment on line {i+1}")
+                        PRINT_ERROR = f"Timeout waiting for acknowledgment on line {i+1}"
+                        IS_PRINTING = False # Stop printing on timeout
                         
                 except Exception as e:
                     logger.error(f"Error sending line {i+1}: {str(e)}")
+                    PRINT_ERROR = f"Error sending line {i+1}: {str(e)}"
+                    IS_PRINTING = False # Stop printing on exception
                     continue
                 
             PRINT_PROGRESS = i + 1
@@ -628,6 +650,7 @@ def print_job_thread(filepath):
         
     except Exception as e:
         logger.error(f"Print job error: {str(e)}")
+        PRINT_ERROR = f"Print job failed: {str(e)}"
     finally:
         IS_PRINTING = False
         IS_PAUSED = False

@@ -137,13 +137,12 @@ function App() {
     // Auto-poll temperature data when connected
     useEffect(() => {
         if (isConnected) {
-            const interval = setInterval(async () => {
+            const pollStatus = async () => {
                 try {
                     const data = await handleApiCall('/api/status');
                     if (data && data.status !== 'not_connected' && data.status !== 'error') {
                         setTemperatures(data.temperatures);
                         
-                        // Update print status if printing
                         if (data.status === 'printing' || data.status === 'paused') {
                             setPrintStatus({
                                 status: data.status,
@@ -154,13 +153,24 @@ function App() {
                                 is_paused: data.is_paused
                             });
                         } else if (data.status === 'connected') {
-                            setPrintStatus({ status: 'idle' });
+                            // Use a functional update to avoid stale state for printStatus
+                            setPrintStatus(prevStatus => {
+                                if (prevStatus.status !== 'idle') {
+                                    return { status: 'idle' };
+                                }
+                                return prevStatus;
+                            });
                         }
                     }
                 } catch {
                     // Silent fail for temperature polling
                 }
-            }, 3000);
+            };
+
+            // Poll immediately and then set up the interval
+            pollStatus();
+            const interval = setInterval(pollStatus, 3000);
+            
             return () => clearInterval(interval);
         } else {
             setTemperatures(null);
@@ -233,8 +243,14 @@ function App() {
             });
             
             if (data.status === 'success') {
-                setPrintStatus({ status: 'printing', filename });
+                setPrintStatus({ status: 'printing', filename, progress: 0 });
                 setLog(prev => [...prev, `${timestamp} - Started printing: ${filename}`]);
+                
+                // Immediately poll for status to get up-to-date info
+                const updatedStatus = await handleApiCall('/api/status');
+                if (updatedStatus && updatedStatus.temperatures) {
+                    setTemperatures(updatedStatus.temperatures);
+                }
             }
         } catch (error) {
             setLog(prev => [...prev, `${timestamp} - Print start failed: ${error.message}`]);
