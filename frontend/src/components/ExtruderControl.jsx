@@ -8,11 +8,30 @@ const ExtruderControl = ({ isConnected, onSendCommand, temperatures }) => {
         fanSpeed: 0,
         extrudeDistance: 5,
         retractDistance: 5,
-        extrusionSpeed: 300
+        extrusionSpeed: 300,
+        hotendTarget: 185,
+        bedTarget: 60
     });
 
     const [activeExtruder, setActiveExtruder] = useState(0);
     const [multiExtruder, setMultiExtruder] = useState(false);
+
+    const handleSetTemperature = (type, temperature) => {
+        if (!isConnected) return;
+        const command = type === 'hotend' ? `M104 S${temperature}` : `M140 S${temperature}`;
+        onSendCommand(command);
+    };
+
+    const handleTemperatureOff = (type) => {
+        if (!isConnected) return;
+        if (type === 'hotend') {
+            onSendCommand('M104 S0');
+            // Don't reset the target in the dropdown, just send the off command
+        } else if (type === 'bed') {
+            onSendCommand('M140 S0');
+            // Don't reset the target in the dropdown, just send the off command
+        }
+    };
 
     // SVG Icons for buttons
     const ExtrudeIcon = () => (
@@ -91,7 +110,7 @@ const ExtruderControl = ({ isConnected, onSendCommand, temperatures }) => {
                 <div className="d-flex justify-content-between align-items-center">
                     <h6 className="mb-0">
                         <i className="bi bi-gear-fill me-2"></i>
-                        Extruder Controls
+                        Extruder & Temp Controls
                     </h6>
                     <div className="form-check form-switch">
                         <input 
@@ -109,6 +128,88 @@ const ExtruderControl = ({ isConnected, onSendCommand, temperatures }) => {
             </div>
             
             <div className="card-body">
+                {/* Temperature Controls */}
+                <div className="row mb-3">
+                    <div className="col-md-6">
+                        <div className="control-row">
+                            <label className="control-label fw-bold">Hotend:</label>
+                            <div className="temperature-controls">
+                                <div className="temp-row">
+                                    <span className={`temp-status me-2 ${(temperatures?.hotend_target || 0) > 0 ? 'on' : 'off'}`}>
+                                        {(temperatures?.hotend_target || 0) > 0 ? 'ON' : 'OFF'}
+                                    </span>
+                                    <select 
+                                        className="form-select form-select-sm me-2"
+                                        value={extruderSettings.hotendTarget}
+                                        onChange={(e) => setExtruderSettings(prev => ({ ...prev, hotendTarget: parseInt(e.target.value) }))}
+                                        style={{ fontSize: '12px', width: 'auto' }}
+                                    >
+                                        <option value={185}>185° (PLA)</option>
+                                        <option value={210}>210° (PETG)</option>
+                                        <option value={240}>240° (ABS)</option>
+                                        <option value={260}>260° (PC)</option>
+                                    </select>
+                                    <button 
+                                        className="btn btn-outline-danger btn-sm me-1"
+                                        onClick={() => handleTemperatureOff('hotend')}
+                                        disabled={!isConnected}
+                                        style={{ fontSize: '10px', padding: '2px 6px' }}
+                                    >
+                                        Off
+                                    </button>
+                                    <button 
+                                        className="btn btn-outline-success btn-sm"
+                                        onClick={() => handleSetTemperature('hotend', extruderSettings.hotendTarget)}
+                                        disabled={!isConnected}
+                                        style={{ fontSize: '10px', padding: '2px 6px' }}
+                                    >
+                                        Set
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="control-row">
+                            <label className="control-label fw-bold">Bed:</label>
+                            <div className="temperature-controls">
+                                <div className="temp-row">
+                                    <span className={`temp-status me-2 ${(temperatures?.bed_target || 0) > 0 ? 'on' : 'off'}`}>
+                                        {(temperatures?.bed_target || 0) > 0 ? 'ON' : 'OFF'}
+                                    </span>
+                                    <select 
+                                        className="form-select form-select-sm me-2"
+                                        value={extruderSettings.bedTarget}
+                                        onChange={(e) => setExtruderSettings(prev => ({ ...prev, bedTarget: parseInt(e.target.value) }))}
+                                        style={{ fontSize: '12px', width: 'auto' }}
+                                    >
+                                        <option value={60}>60° (PLA)</option>
+                                        <option value={70}>70° (PETG)</option>
+                                        <option value={80}>80° (ABS)</option>
+                                        <option value={90}>90° (PC)</option>
+                                    </select>
+                                    <button 
+                                        className="btn btn-outline-danger btn-sm me-1"
+                                        onClick={() => handleTemperatureOff('bed')}
+                                        disabled={!isConnected}
+                                        style={{ fontSize: '10px', padding: '2px 6px' }}
+                                    >
+                                        Off
+                                    </button>
+                                    <button 
+                                        className="btn btn-outline-success btn-sm"
+                                        onClick={() => handleSetTemperature('bed', extruderSettings.bedTarget)}
+                                        disabled={!isConnected}
+                                        style={{ fontSize: '10px', padding: '2px 6px' }}
+                                    >
+                                        Set
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Extruder Selection */}
                 {multiExtruder && (
                     <div className="row mb-3">

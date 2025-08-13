@@ -61,10 +61,10 @@ const CompactExtruderControls = ({ isConnected, onSendCommand, temperatures }) =
         if (!isConnected) return;
         if (type === 'hotend') {
             onSendCommand('M104 S0');
-            setExtruderSettings(prev => ({ ...prev, hotendTarget: 0 }));
+            // Don't reset the target in the dropdown, just send the off command
         } else if (type === 'bed') {
             onSendCommand('M140 S0');
-            setExtruderSettings(prev => ({ ...prev, bedTarget: 0 }));
+            // Don't reset the target in the dropdown, just send the off command
         }
     };
 
