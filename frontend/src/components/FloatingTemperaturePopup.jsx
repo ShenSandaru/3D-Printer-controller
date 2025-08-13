@@ -194,6 +194,11 @@ export default function FloatingTemperaturePopup({ temperatures, isConnected }) 
                     </div>
                 </div>
 
+                {/* Settings Icon */}
+                <div className="temp-settings-icon">
+                    <i className="bi bi-gear"></i>
+                </div>
+
                 {/* Live indicator */}
                 <div className="live-indicator">
                     <div className="live-dot" title="Live Temperature Data"></div>

@@ -114,7 +114,6 @@
 
 .corner-btn:hover:not(:disabled) {
     background: linear-gradient(145deg, #5a6268, #495057);
-    transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
 
@@ -122,6 +121,11 @@
     background: linear-gradient(145deg, #adb5bd, #868e96);
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+.corner-btn i,
+.corner-btn span {
+    pointer-events: none;
 }
 
 .corner-btn i {
@@ -190,6 +194,11 @@
     opacity: 0.6;
 }
 
+.modern-direction-btn i,
+.modern-direction-btn .axis-text {
+    pointer-events: none;
+}
+
 .modern-direction-btn i {
     font-size: 18px;
     margin-bottom: 2px;
@@ -244,9 +253,12 @@
     z-index: 10;
 }
 
+.modern-center-btn i {
+    pointer-events: none;
+}
+
 .modern-center-btn:hover:not(:disabled) {
     background: linear-gradient(145deg, #c82333, #a71e2a);
-    transform: translate(-50%, -50%) translateY(-2px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
@@ -316,7 +328,6 @@
 .step-btn:hover:not(:disabled) {
     border-color: #007bff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
 }
 
 .step-btn.active {
@@ -337,10 +348,12 @@
 .step-number {
     font-size: 16px;
     font-weight: bold;
+    pointer-events: none;
 }
 
 .step-label {
     font-size: 10px;
+    pointer-events: none;
 }
 
 /* Z-Axis Controls */
@@ -378,7 +391,6 @@
 
 .z-btn:hover:not(:disabled) {
     background: linear-gradient(145deg, #1e7e34, #155724);
-    transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
 }
 
@@ -386,6 +398,11 @@
     background: linear-gradient(145deg, #adb5bd, #868e96);
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+.z-btn i,
+.z-btn span {
+    pointer-events: none;
 }
 
 .z-btn i {
