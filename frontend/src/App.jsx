@@ -11,6 +11,7 @@ import GcodeViewer from './components/GcodeViewer';
 import ExtruderControl from './components/ExtruderControl';
 import AdvancedSettings from './components/AdvancedSettings';
 import ProbePanel from './components/ProbePanel';
+import ZOffsetControl from './components/ZOffsetControl';
 import './App.css';
 
 function App() {
@@ -399,6 +400,13 @@ function App() {
                                 />
                             </div>
                         )}
+                        
+                        {/* Z-Offset Control */}
+                        <div className="mb-3">
+                            <ZOffsetControl 
+                                isConnected={isConnected}
+                            />
+                        </div>
                         
                         <div className="flex-grow-1" style={{ minHeight: '200px' }}>
                             <Log log={log} onSendCommand={sendCommand} />

@@ -6,14 +6,11 @@ export default function FloatingTemperaturePopup({ temperatures, isConnected }) 
     const [isVisible, setIsVisible] = useState(false);
     const [scrollTimeout, setScrollTimeout] = useState(null);
     const [isScrolling, setIsScrolling] = useState(false);
-    
-    // Test mode - set to false for production, true for testing
-    const TEST_MODE = false;
 
-    const hotendTemp = temperatures?.hotend_actual || temperatures?.hotend || (TEST_MODE ? 25.5 : 0);
-    const bedTemp = temperatures?.bed_actual || temperatures?.bed || (TEST_MODE ? 22.3 : 0);
-    const hotendTarget = temperatures?.hotend_target || temperatures?.hotendTarget || (TEST_MODE ? 200 : 0);
-    const bedTarget = temperatures?.bed_target || temperatures?.bedTarget || (TEST_MODE ? 60 : 0);
+    const hotendTemp = temperatures?.hotend_actual || temperatures?.hotend || 0;
+    const bedTemp = temperatures?.bed_actual || temperatures?.bed || 0;
+    const hotendTarget = temperatures?.hotend_target || temperatures?.hotendTarget || 0;
+    const bedTarget = temperatures?.bed_target || temperatures?.bedTarget || 0;
 
     // Show popup when connected and temperatures are available
     useEffect(() => {
