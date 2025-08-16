@@ -1,0 +1,117 @@
+2025-08-16 12:12:06,424 - DEBUG - Garbage chunk 0: b'start\nMarlin 2.1.2.5\necho: Last Updated: 2024-11-18 | Author: (none, default config)\necho: Compiled: Aug 12 2025\necho: Free Memory: 3387  PlannerBufferBytes: 1200\necho:V88 stored settings retrieved (607 bytes; crc 2704)\n'
+2025-08-16 12:12:06,430 - INFO - 
+=== TEST 1: Basic Communication ===
+2025-08-16 12:12:06,433 - DEBUG - Encoded command: b'M105\n'
+2025-08-16 12:12:06,434 - DEBUG - Bytes written: 5, Expected: 5
+2025-08-16 12:12:07,760 - INFO -   - Pre-buffer: 0 bytes
+2025-08-16 12:12:07,760 - INFO -   - Post-buffer: 0 bytes
+2025-08-16 12:12:07,761 - INFO -   - Responses received: 2
+2025-08-16 12:12:07,761 - DEBUG -   Response 1: 'echo:SD card released' (Raw: b'echo:SD card released\n')
+2025-08-16 12:12:07,767 - DEBUG -   Response 2: 'ok T:30.00 /0.00 B:29.49 /0.00 @:0 B@:0' (Raw: b'ok T:30.00 /0.00 B:29.49 /0.00 @:0 B@:0\n')
+2025-08-16 12:12:08,775 - DEBUG - Encoded command: b'M114\n'
+2025-08-16 12:12:08,775 - DEBUG - Bytes written: 5, Expected: 5
+2025-08-16 12:12:08,992 - INFO -   - Pre-buffer: 0 bytes
+2025-08-16 12:12:08,992 - INFO -   - Post-buffer: 0 bytes
+2025-08-16 12:12:08,992 - INFO -   - Responses received: 2
+2025-08-16 12:12:08,992 - DEBUG -   Response 1: 'X:-60.00 Y:0.00 Z:0.00 E:0.00 Count X:-4800 Y:0 Z:0' (Raw: b'X:-60.00 Y:0.00 Z:0.00 E:0.00 Count X:-4800 Y:0 Z:0\n')
+2025-08-16 12:12:08,997 - DEBUG -   Response 2: 'ok' (Raw: b'ok\n')
+2025-08-16 12:12:10,004 - DEBUG - Encoded command: b'G28 X\n'
+2025-08-16 12:12:10,005 - DEBUG - Bytes written: 6, Expected: 6
+2025-08-16 12:12:14,665 - INFO -   - Pre-buffer: 0 bytes
+2025-08-16 12:12:14,666 - INFO -   - Post-buffer: 0 bytes
+2025-08-16 12:12:14,666 - INFO -   - Responses received: 4
+2025-08-16 12:12:14,667 - DEBUG -   Response 1: 'echo:busy: processing' (Raw: b'echo:busy: processing\n')
+2025-08-16 12:12:14,667 - DEBUG -   Response 2: 'echo:busy: processing' (Raw: b'echo:busy: processing\n')
+2025-08-16 12:12:14,667 - DEBUG -   Response 3: 'X:-60.00 Y:0.00 Z:5.00 E:0.00 Count X:-4800 Y:0 Z:2000' (Raw: b'X:-60.00 Y:0.00 Z:5.00 E:0.00 Count X:-4800 Y:0 Z:2000\n')
+2025-08-16 12:12:14,667 - DEBUG -   Response 4: 'ok' (Raw: b'ok\n')
+2025-08-16 12:12:15,674 - DEBUG - Encoded command: b'M115\n'
+2025-08-16 12:12:15,675 - DEBUG - Bytes written: 5, Expected: 5
+2025-08-16 12:12:19,716 - INFO -   - Pre-buffer: 0 bytes
+2025-08-16 12:12:19,716 - INFO -   - Post-buffer: 0 bytes
+2025-08-16 12:12:19,716 - INFO -   - Responses received: 38
+2025-08-16 12:12:19,717 - DEBUG -   Response 1: 'FIRMWARE_NAME:Marlin 2.1.2.5 (Aug 10 2025 15:39:24) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:3D Printer EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff' (Raw: b'FIRMWARE_NAME:Marlin 2.1.2.5 (Aug 10 2025 15:39:24) SOURCE_CODE_URL:github.com/MarlinFirmware/Marlin PROTOCOL_VERSION:1.0 MACHINE_TYPE:3D Printer EXTRUDER_COUNT:1 UUID:cede2a2f-41a2-4748-9b12-c55c62f367ff\n')
+2025-08-16 12:12:19,717 - DEBUG -   Response 2: 'Cap:SERIAL_XON_XOFF:0' (Raw: b'Cap:SERIAL_XON_XOFF:0\n')
+2025-08-16 12:12:19,717 - DEBUG -   Response 3: 'Cap:BINARY_FILE_TRANSFER:0' (Raw: b'Cap:BINARY_FILE_TRANSFER:0\n')
+2025-08-16 12:12:19,717 - DEBUG -   Response 4: 'Cap:EEPROM:1' (Raw: b'Cap:EEPROM:1\n')
+2025-08-16 12:12:19,717 - DEBUG -   Response 5: 'Cap:VOLUMETRIC:1' (Raw: b'Cap:VOLUMETRIC:1\n')
+2025-08-16 12:12:19,717 - DEBUG -   Response 6: 'Cap:AUTOREPORT_POS:0' (Raw: b'Cap:AUTOREPORT_POS:0\n')
+2025-08-16 12:12:19,717 - DEBUG -   Response 7: 'Cap:AUTOREPORT_TEMP:1' (Raw: b'Cap:AUTOREPORT_TEMP:1\n')
+2025-08-16 12:12:19,717 - DEBUG -   Response 8: 'Cap:PROGRESS:0' (Raw: b'Cap:PROGRESS:0\n')
+2025-08-16 12:12:19,717 - DEBUG -   Response 9: 'Cap:PRINT_JOB:1' (Raw: b'Cap:PRINT_JOB:1\n')
+2025-08-16 12:12:19,718 - DEBUG -   Response 10: 'Cap:AUTOLEVEL:0' (Raw: b'Cap:AUTOLEVEL:0\n')
+2025-08-16 12:12:19,718 - DEBUG -   Response 11: 'Cap:RUNOUT:1' (Raw: b'Cap:RUNOUT:1\n')
+2025-08-16 12:12:19,718 - DEBUG -   Response 12: 'Cap:Z_PROBE:0' (Raw: b'Cap:Z_PROBE:0\n')
+2025-08-16 12:12:19,718 - DEBUG -   Response 13: 'Cap:LEVELING_DATA:0' (Raw: b'Cap:LEVELING_DATA:0\n')
+2025-08-16 12:12:19,718 - DEBUG -   Response 14: 'Cap:BUILD_PERCENT:0' (Raw: b'Cap:BUILD_PERCENT:0\n')
+2025-08-16 12:12:19,719 - DEBUG -   Response 15: 'Cap:SOFTWARE_POWER:0' (Raw: b'Cap:SOFTWARE_POWER:0\n')
+2025-08-16 12:12:19,719 - DEBUG -   Response 16: 'Cap:TOGGLE_LIGHTS:0' (Raw: b'Cap:TOGGLE_LIGHTS:0\n')
+2025-08-16 12:12:19,719 - DEBUG -   Response 17: 'Cap:CASE_LIGHT_BRIGHTNESS:0' (Raw: b'Cap:CASE_LIGHT_BRIGHTNESS:0\n')
+2025-08-16 12:12:19,720 - DEBUG -   Response 18: 'Cap:EMERGENCY_PARSER:0' (Raw: b'Cap:EMERGENCY_PARSER:0\n')
+2025-08-16 12:12:19,720 - DEBUG -   Response 19: 'Cap:HOST_ACTION_COMMANDS:0' (Raw: b'Cap:HOST_ACTION_COMMANDS:0\n')
+2025-08-16 12:12:19,720 - DEBUG -   Response 20: 'Cap:PROMPT_SUPPORT:0' (Raw: b'Cap:PROMPT_SUPPORT:0\n')
+2025-08-16 12:12:19,720 - DEBUG -   Response 21: 'Cap:SDCARD:1' (Raw: b'Cap:SDCARD:1\n')
+2025-08-16 12:12:19,720 - DEBUG -   Response 22: 'Cap:MULTI_VOLUME:0' (Raw: b'Cap:MULTI_VOLUME:0\n')
+2025-08-16 12:12:19,720 - DEBUG -   Response 23: 'Cap:REPEAT:0' (Raw: b'Cap:REPEAT:0\n')
+2025-08-16 12:12:19,720 - DEBUG -   Response 24: 'Cap:SD_WRITE:1' (Raw: b'Cap:SD_WRITE:1\n')
+2025-08-16 12:12:19,721 - DEBUG -   Response 25: 'Cap:AUTOREPORT_SD_STATUS:0' (Raw: b'Cap:AUTOREPORT_SD_STATUS:0\n')
+2025-08-16 12:12:19,721 - DEBUG -   Response 26: 'Cap:LONG_FILENAME:0' (Raw: b'Cap:LONG_FILENAME:0\n')
+2025-08-16 12:12:19,721 - DEBUG -   Response 27: 'Cap:LFN_WRITE:0' (Raw: b'Cap:LFN_WRITE:0\n')
+2025-08-16 12:12:19,721 - DEBUG -   Response 28: 'Cap:CUSTOM_FIRMWARE_UPLOAD:0' (Raw: b'Cap:CUSTOM_FIRMWARE_UPLOAD:0\n')
+2025-08-16 12:12:19,721 - DEBUG -   Response 29: 'Cap:EXTENDED_M20:0' (Raw: b'Cap:EXTENDED_M20:0\n')
+2025-08-16 12:12:19,722 - DEBUG -   Response 30: 'Cap:THERMAL_PROTECTION:1' (Raw: b'Cap:THERMAL_PROTECTION:1\n')
+2025-08-16 12:12:19,722 - DEBUG -   Response 31: 'Cap:MOTION_MODES:0' (Raw: b'Cap:MOTION_MODES:0\n')
+2025-08-16 12:12:19,722 - DEBUG -   Response 32: 'Cap:ARCS:1' (Raw: b'Cap:ARCS:1\n')
+2025-08-16 12:12:19,722 - DEBUG -   Response 33: 'Cap:BABYSTEPPING:0' (Raw: b'Cap:BABYSTEPPING:0\n')
+2025-08-16 12:12:19,722 - DEBUG -   Response 34: 'Cap:CHAMBER_TEMPERATURE:0' (Raw: b'Cap:CHAMBER_TEMPERATURE:0\n')
+2025-08-16 12:12:19,723 - DEBUG -   Response 35: 'Cap:COOLER_TEMPERATURE:0' (Raw: b'Cap:COOLER_TEMPERATURE:0\n')
+2025-08-16 12:12:19,723 - DEBUG -   Response 36: 'Cap:MEATPACK:0' (Raw: b'Cap:MEATPACK:0\n')
+2025-08-16 12:12:19,723 - DEBUG -   Response 37: 'Cap:CONFIG_EXPORT:0' (Raw: b'Cap:CONFIG_EXPORT:0\n')
+2025-08-16 12:12:19,723 - DEBUG -   Response 38: 'ok' (Raw: b'ok\n')
+2025-08-16 12:12:20,724 - INFO - 
+=== TEST 2: Rapid Fire Commands ===
+2025-08-16 12:12:20,727 - DEBUG - Encoded command: b'M105\n'
+2025-08-16 12:12:20,727 - DEBUG - Bytes written: 5, Expected: 5
+2025-08-16 12:12:20,837 - INFO -   - Pre-buffer: 0 bytes
+2025-08-16 12:12:20,837 - INFO -   - Post-buffer: 0 bytes
+2025-08-16 12:12:20,838 - INFO -   - Responses received: 1
+2025-08-16 12:12:20,838 - DEBUG -   Response 1: 'ok T:30.21 /0.00 B:29.32 /0.00 @:0 B@:0' (Raw: b'ok T:30.21 /0.00 B:29.32 /0.00 @:0 B@:0\n')
+2025-08-16 12:12:20,945 - DEBUG - Encoded command: b'M105\n'
+2025-08-16 12:12:20,946 - DEBUG - Bytes written: 5, Expected: 5
+2025-08-16 12:12:21,057 - INFO -   - Pre-buffer: 0 bytes
+2025-08-16 12:12:21,058 - INFO -   - Post-buffer: 0 bytes
+2025-08-16 12:12:21,058 - INFO -   - Responses received: 1
+2025-08-16 12:12:21,059 - DEBUG -   Response 1: 'ok T:30.08 /0.00 B:29.52 /0.00 @:0 B@:0' (Raw: b'ok T:30.08 /0.00 B:29.52 /0.00 @:0 B@:0\n')
+2025-08-16 12:12:21,165 - DEBUG - Encoded command: b'M105\n'
+2025-08-16 12:12:21,166 - DEBUG - Bytes written: 5, Expected: 5
+2025-08-16 12:12:21,277 - INFO -   - Pre-buffer: 0 bytes
+2025-08-16 12:12:21,278 - INFO -   - Post-buffer: 0 bytes
+2025-08-16 12:12:21,278 - INFO -   - Responses received: 1
+2025-08-16 12:12:21,278 - DEBUG -   Response 1: 'ok T:30.05 /0.00 B:29.40 /0.00 @:0 B@:0' (Raw: b'ok T:30.05 /0.00 B:29.40 /0.00 @:0 B@:0\n')
+2025-08-16 12:12:21,383 - DEBUG - Encoded command: b'M105\n'
+2025-08-16 12:12:21,383 - DEBUG - Bytes written: 5, Expected: 5
+2025-08-16 12:12:21,496 - INFO -   - Pre-buffer: 0 bytes
+2025-08-16 12:12:21,497 - INFO -   - Post-buffer: 0 bytes
+2025-08-16 12:12:21,497 - INFO -   - Responses received: 1
+2025-08-16 12:12:21,499 - DEBUG -   Response 1: 'ok T:30.10 /0.00 B:29.40 /0.00 @:0 B@:0' (Raw: b'ok T:30.10 /0.00 B:29.40 /0.00 @:0 B@:0\n')
+2025-08-16 12:12:21,605 - DEBUG - Encoded command: b'M105\n'
+2025-08-16 12:12:21,606 - DEBUG - Bytes written: 5, Expected: 5
+2025-08-16 12:12:21,719 - INFO -   - Pre-buffer: 0 bytes
+2025-08-16 12:12:21,719 - INFO -   - Post-buffer: 0 bytes
+2025-08-16 12:12:21,719 - INFO -   - Responses received: 1
+2025-08-16 12:12:21,720 - DEBUG -   Response 1: 'ok T:30.13 /0.00 B:29.37 /0.00 @:0 B@:0' (Raw: b'ok T:30.13 /0.00 B:29.37 /0.00 @:0 B@:0\n')
+2025-08-16 12:12:21,820 - INFO - 
+=== TEST 3: Buffer Overflow Test ===
+2025-08-16 12:12:23,927 - DEBUG - Garbage chunk 0: b'ok T:30.10 /0.00 B:29.37 /0.00 @:0 B@:0\nok T:30.10 /0.00 B:29.37 /0.00 @:0 B@:0\nok T:30.10 /0.00 B:29.37 /0.00 @:0 B@:0\n'
+2025-08-16 12:12:23,927 - INFO - 
+=== TEST 4: G-code File Analysis ===
+2025-08-16 12:12:23,935 - INFO -   - Total lines: 0
+2025-08-16 12:12:23,938 - INFO - 
+=== TEST 5: Serial Port Characteristics ===
+2025-08-16 12:12:23,938 - INFO -   - Port: COM3
+2025-08-16 12:12:23,938 - INFO -   - Baudrate: 250000
+2025-08-16 12:12:23,938 - INFO -   - Timeout: 2
+2025-08-16 12:12:23,939 - INFO -   - Write timeout: 2
+2025-08-16 12:12:23,939 - INFO -   - Bytesize: 8
+2025-08-16 12:12:23,939 - INFO -   - Parity: N
+2025-08-16 12:12:23,939 - INFO -   - Stopbits: 1
+2025-08-16 12:12:23,939 - INFO -   - Flow control: XON/XOFF=False, RTS/CTS=False
