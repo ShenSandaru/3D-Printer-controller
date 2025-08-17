@@ -1,7 +1,8 @@
 // frontend/src/components/TemperatureDisplay.jsx
 import React from 'react';
+import CompactExtruderControls from './CompactExtruderControls';
 
-export default function TemperatureDisplay({ temperatures }) {
+export default function TemperatureDisplay({ temperatures, isConnected, onSendCommand }) {
     const hotendTemp = temperatures?.hotend_actual || temperatures?.hotend || 0;
     const bedTemp = temperatures?.bed_actual || temperatures?.bed || 0;
     const hotendTarget = temperatures?.hotend_target || temperatures?.hotendTarget || 0;
@@ -20,22 +21,27 @@ export default function TemperatureDisplay({ temperatures }) {
             <div className="card-header">
                 <h5 className="card-title mb-0">
                     <i className="bi bi-thermometer-half me-2"></i>
-                    Temperature Monitor
+                    Temperature & Controls
                 </h5>
             </div>
-            <div className="card-body">
-                <div className="row g-3">
-                    {/* Hotend Temperature */}
+            <div className="card-body" style={{ padding: '12px' }}>
+                <div className="row g-2">
+                    {/* Hotend Temperature - Compact */}
                     <div className="col-md-6">
-                        <div className="d-flex align-items-center mb-2">
-                            <i className="bi bi-fire text-danger me-2"></i>
-                            <strong>Hotend</strong>
+                        <div className="d-flex align-items-center mb-1">
+                            <i className="bi bi-fire text-danger me-1" style={{ fontSize: '14px' }}></i>
+                            <strong style={{ fontSize: '13px' }}>Heat:</strong>
+                            <span className="ms-auto" style={{ fontSize: '12px' }}>
+                                {hotendTarget === 0 ? 'Off' : 
+                                 Math.abs(hotendTemp - hotendTarget) <= 2 ? 'Ready' : 
+                                 hotendTemp < hotendTarget ? 'Heating' : 'Cooling'}
+                            </span>
                         </div>
-                        <div className="d-flex align-items-center justify-content-between mb-2">
-                            <span className="fs-3 fw-bold">{hotendTemp.toFixed(1)}°C</span>
-                            <span className="text-muted">/ {hotendTarget}°C</span>
+                        <div className="d-flex align-items-center justify-content-between mb-1">
+                            <span className="fs-5 fw-bold" style={{ fontSize: '18px !important' }}>{hotendTemp.toFixed(1)}°C</span>
+                            <span className="text-muted" style={{ fontSize: '12px' }}>/ {hotendTarget}°C</span>
                         </div>
-                        <div className="progress" style={{ height: '8px' }}>
+                        <div className="progress" style={{ height: '6px' }}>
                             <div 
                                 className={`progress-bar bg-${getTemperatureStatus(hotendTemp, hotendTarget)}`}
                                 style={{ 
@@ -43,26 +49,24 @@ export default function TemperatureDisplay({ temperatures }) {
                                 }}
                             ></div>
                         </div>
-                        <small className="text-muted">
-                            Status: <span className={`badge bg-${getTemperatureStatus(hotendTemp, hotendTarget)}`}>
-                                {hotendTarget === 0 ? 'Standby' : 
-                                 Math.abs(hotendTemp - hotendTarget) <= 2 ? 'Ready' : 
-                                 hotendTemp < hotendTarget ? 'Heating' : 'Cooling'}
-                            </span>
-                        </small>
                     </div>
 
-                    {/* Bed Temperature */}
+                    {/* Bed Temperature - Compact */}
                     <div className="col-md-6">
-                        <div className="d-flex align-items-center mb-2">
-                            <i className="bi bi-square text-primary me-2"></i>
-                            <strong>Heated Bed</strong>
+                        <div className="d-flex align-items-center mb-1">
+                            <i className="bi bi-square text-primary me-1" style={{ fontSize: '14px' }}></i>
+                            <strong style={{ fontSize: '13px' }}>Bed:</strong>
+                            <span className="ms-auto" style={{ fontSize: '12px' }}>
+                                {bedTarget === 0 ? 'Off' : 
+                                 Math.abs(bedTemp - bedTarget) <= 2 ? 'Ready' : 
+                                 bedTemp < bedTarget ? 'Heating' : 'Cooling'}
+                            </span>
                         </div>
-                        <div className="d-flex align-items-center justify-content-between mb-2">
-                            <span className="fs-3 fw-bold">{bedTemp.toFixed(1)}°C</span>
-                            <span className="text-muted">/ {bedTarget}°C</span>
+                        <div className="d-flex align-items-center justify-content-between mb-1">
+                            <span className="fs-5 fw-bold" style={{ fontSize: '18px !important' }}>{bedTemp.toFixed(1)}°C</span>
+                            <span className="text-muted" style={{ fontSize: '12px' }}>/ {bedTarget}°C</span>
                         </div>
-                        <div className="progress" style={{ height: '8px' }}>
+                        <div className="progress" style={{ height: '6px' }}>
                             <div 
                                 className={`progress-bar bg-${getTemperatureStatus(bedTemp, bedTarget)}`}
                                 style={{ 
@@ -70,21 +74,21 @@ export default function TemperatureDisplay({ temperatures }) {
                                 }}
                             ></div>
                         </div>
-                        <small className="text-muted">
-                            Status: <span className={`badge bg-${getTemperatureStatus(bedTemp, bedTarget)}`}>
-                                {bedTarget === 0 ? 'Standby' : 
-                                 Math.abs(bedTemp - bedTarget) <= 2 ? 'Ready' : 
-                                 bedTemp < bedTarget ? 'Heating' : 'Cooling'}
-                            </span>
-                        </small>
                     </div>
                 </div>
 
+                {/* Compact Extruder Controls */}
+                <CompactExtruderControls 
+                    isConnected={isConnected}
+                    onSendCommand={onSendCommand}
+                    temperatures={temperatures}
+                />
+
                 {(!temperatures || (hotendTemp === 0 && bedTemp === 0)) && (
-                    <div className="text-center text-muted mt-3">
-                        <i className="bi bi-thermometer display-4 mb-2"></i>
-                        <p className="mb-0">No temperature data available</p>
-                        <small>Connect to printer to see real-time temperatures</small>
+                    <div className="text-center text-muted mt-2">
+                        <i className="bi bi-thermometer fs-4 mb-1"></i>
+                        <p className="mb-0" style={{ fontSize: '12px' }}>No temperature data available</p>
+                        <small style={{ fontSize: '10px' }}>Connect to printer to see real-time temperatures</small>
                     </div>
                 )}
             </div>

@@ -27,6 +27,41 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
+/* Enhanced 3D Viewer Styles */
+.gcode-3d-viewer {
+  transition: all 0.2s ease;
+}
+
+.gcode-3d-viewer canvas {
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+.gcode-3d-viewer:hover canvas {
+  transform: scale(1.002);
+}
+
+/* Smooth control button animations */
+.gcode-3d-viewer .btn-group .btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.gcode-3d-viewer .btn-group .btn:hover {
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Momentum rotation indicator */
+.rotating-momentum {
+  animation: gentle-rotate 2s ease-out infinite;
+}
+
+@keyframes gentle-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(1deg); }
+}
+
 /* Glass morphism effect for cards */
 .card {
   backdrop-filter: blur(10px);

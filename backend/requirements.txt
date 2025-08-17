@@ -1,3 +1,5 @@
-Flask==2.3.3
-pyserial==3.5
-Flask-CORS==4.0.0
+Flask>=2.0.0
+Flask-CORS>=3.0.0
+pyserial>=3.4
+setuptools>=65.0.0
+wheel>=0.37.0

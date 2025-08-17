@@ -1,10 +1,26 @@
 # Frontend Error Resolution Guide
 
-## ✅ **ISSUE RESOLVED**
+## ✅ **LATEST ISSUE RESOLVED - January 2025**
 
-The Vite EPERM error has been successfully fixed! The frontend is now running properly on `http://localhost:5173/`.
+The Vite EPERM error has been successfully fixed again! The frontend is now running properly on `http://localhost:5173/`.
 
-## 🔧 **Fixes Applied**
+### **Current Fix Applied**
+- **Problem**: `Error: EPERM: operation not permitted, rmdir 'node_modules\.vite\deps'`
+- **Solution**: Used `npm run clean:cache` followed by `npm run dev:force`
+- **Root Cause**: OneDrive sync conflicts with Vite cache directories
+
+## 🔧 **Quick Fix Commands**
+
+### **Immediate Solution**
+```powershell
+cd frontend
+npm run clean:cache
+npm run dev:force
+```
+
+### **Updated Batch Scripts**
+- `start-dev.bat` - Now automatically clears cache before starting
+- `start-frontend.bat` - New simple script for reliable startup
 
 ### 1. **Enhanced Vite Configuration**
 Updated `vite.config.js` with Windows-specific optimizations:

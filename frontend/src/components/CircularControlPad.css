@@ -1,0 +1,522 @@
+/* Modern Circular Control Pad CSS */
+.circular-control-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.modern-control-panel {
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid #dee2e6;
+}
+
+.control-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.control-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #495057;
+    margin: 0;
+}
+
+.status-indicator.disconnected {
+    color: #dc3545;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.control-main {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.control-left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.control-right {
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Modern Circular Pad */
+.modern-circular-pad {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    background: linear-gradient(145deg, #ffffff, #f1f3f4);
+    border-radius: 50%;
+    box-shadow: 
+        inset 0 4px 8px rgba(0, 0, 0, 0.1),
+        0 4px 16px rgba(0, 0, 0, 0.15);
+    border: 2px solid #dee2e6;
+}
+
+/* Concentric Rings */
+.pad-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+}
+
+.ring-outer {
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+}
+
+.ring-middle {
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 40px;
+}
+
+.ring-inner {
+    top: 80px;
+    left: 80px;
+    right: 80px;
+    bottom: 80px;
+}
+
+/* Corner Home Buttons */
+.corner-btn {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(145deg, #6c757d, #5a6268);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.corner-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #5a6268, #495057);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.corner-btn:disabled {
+    background: linear-gradient(145deg, #adb5bd, #868e96);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.corner-btn i,
+.corner-btn span {
+    pointer-events: none;
+}
+
+.corner-btn i {
+    font-size: 16px;
+    margin-bottom: 2px;
+}
+
+.corner-btn span {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.corner-top-left {
+    top: -15px;
+    left: -15px;
+}
+
+.corner-top-right {
+    top: -15px;
+    right: -15px;
+}
+
+.corner-bottom-left {
+    bottom: -15px;
+    left: -15px;
+}
+
+.corner-bottom-right {
+    bottom: -15px;
+    right: -15px;
+}
+
+/* Direction Controls */
+.direction-controls {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.modern-direction-btn {
+    position: absolute;
+    width: 60px;
+    height: 40px;
+    background: linear-gradient(145deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+
+.modern-direction-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #0056b3, #004085);
+}
+
+.modern-direction-btn:disabled {
+    background: linear-gradient(145deg, #adb5bd, #868e96);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.modern-direction-btn i,
+.modern-direction-btn .axis-text {
+    pointer-events: none;
+}
+
+.modern-direction-btn i {
+    font-size: 18px;
+    margin-bottom: 2px;
+}
+
+.axis-text {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* Direction Button Positions */
+.y-plus {
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.x-plus {
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.y-minus {
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.x-minus {
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+}
+
+/* Center Button */
+.modern-center-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(145deg, #dc3545, #c82333);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.modern-center-btn i {
+    pointer-events: none;
+}
+
+.modern-center-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #c82333, #a71e2a);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.modern-center-btn:disabled {
+    background: linear-gradient(145deg, #adb5bd, #868e96);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Current Step Display */
+.current-step-display {
+    position: absolute;
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.step-value {
+    font-size: 16px;
+    color: #ffc107;
+}
+
+.step-unit {
+    font-size: 12px;
+    margin-left: 2px;
+}
+
+/* Step Controls */
+.step-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.step-header {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.step-btn {
+    width: 60px;
+    height: 50px;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.step-btn:hover:not(:disabled) {
+    border-color: #007bff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.step-btn.active {
+    background: linear-gradient(145deg, #007bff, #0056b3);
+    border-color: #0056b3;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.step-btn:disabled {
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-color: #dee2e6;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.step-number {
+    font-size: 16px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.step-label {
+    font-size: 10px;
+    pointer-events: none;
+}
+
+/* Z-Axis Controls */
+.z-axis-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.z-header {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.z-btn {
+    width: 60px;
+    height: 40px;
+    background: linear-gradient(145deg, #28a745, #1e7e34);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.z-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #1e7e34, #155724);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.z-btn:disabled {
+    background: linear-gradient(145deg, #adb5bd, #868e96);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.z-btn i,
+.z-btn span {
+    pointer-events: none;
+}
+
+.z-btn i {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.z-btn span {
+    font-size: 10px;
+}
+
+/* Position Status */
+.position-status {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: linear-gradient(145deg, #343a40, #495057);
+    color: white;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 20px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.position-item {
+    text-align: center;
+    min-width: 70px;
+}
+
+.position-item label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #adb5bd;
+    margin-bottom: 4px;
+}
+
+.position-item span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .modern-circular-pad {
+        width: 240px;
+        height: 240px;
+    }
+    
+    .modern-direction-btn {
+        width: 50px;
+        height: 35px;
+        font-size: 12px;
+    }
+    
+    .modern-center-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+    
+    .corner-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 10px;
+    }
+    
+    .step-btn, .z-btn {
+        width: 50px;
+        height: 40px;
+    }
+    
+    .control-main {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .control-right {
+        flex-direction: row;
+        width: auto;
+        gap: 15px;
+    }
+}
+
+/* Animation for active states */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.step-btn.active {
+    animation: pulse 2s infinite;
+}
+
+/* Focus styles for accessibility */
+.modern-direction-btn:focus,
+.corner-btn:focus,
+.step-btn:focus,
+.z-btn:focus,
+.modern-center-btn:focus {
+    outline: 3px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Disabled state for disconnected */
+.modern-control-panel.disconnected .modern-direction-btn,
+.modern-control-panel.disconnected .corner-btn,
+.modern-control-panel.disconnected .step-btn,
+.modern-control-panel.disconnected .z-btn,
+.modern-control-panel.disconnected .modern-center-btn {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
